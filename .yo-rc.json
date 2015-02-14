@@ -1,0 +1,48 @@
+{
+  "generator-chayka": {
+    "support": [
+      "UriProcessing",
+      "ConsolePages",
+      "Metaboxes"
+    ],
+    "register": [
+      "registerActions",
+      "registerFilters",
+      "registerResources",
+      "registerRoutes",
+      "registerConsolePages",
+      "registerMetaboxes"
+    ],
+    "appType": "plugin",
+    "appName": "Chayka.Facebook",
+    "appDescription": "Facebook integration for Chayka Framework",
+    "appKeywords": "WordPress, Chayka, Facebook, auth, share",
+    "appVersion": "0.0.1",
+    "packagistVendor": "chayka",
+    "packagistPackage": "facebook-wpp",
+    "phpNamespace": "Chayka\\Facebook",
+    "chaykaFramework": "external",
+    "chaykaFrameworkDeps": {
+      "helpers": true,
+      "mvc": true,
+      "wp": true,
+      "core": true
+    },
+    "initDep": true,
+    "initDepPhpClass": "Chayka\\WP\\Plugin",
+    "initDepMessage": "Chayka Framework functionality is not available",
+    "gitInit": true,
+    "gitRemote": "github",
+    "githubUser": "chayka",
+    "gitRemoteRepo": "git@github.com:chayka/Chayka.Facebook.wpp.git",
+    "gitPush": true,
+    "ideaProject": "Chayka.Facebook.wpp",
+    "ideaDeploymentPath": "/Chayka.Core.wpp/vendor/chayka/facebook-wpp/",
+    "appAuthor": "Boris Mossounov",
+    "appAuthorEmail": "borix@tut.by",
+    "appAuthorUri": "http://anotherguru.me/",
+    "appLicense": "MIT",
+    "ideaDeploymentServer": "WP Plugins",
+    "appClass": "Plugin"
+  }
+}

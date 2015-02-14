@@ -1,0 +1,32 @@
+{
+    "appType": "plugin",
+    "appName": "Chayka.Facebook",
+    "appDescription": "Facebook integration for Chayka Framework",
+    "appKeywords": "WordPress, Chayka, Facebook, auth, share",
+    "appVersion": "0.0.1",
+    "appAuthor": "Boris Mossounov",
+    "appAuthorEmail": "borix@tut.by",
+    "appAuthorUri": "http://anotherguru.me/",
+    "appLicense": "MIT",
+    "phpNamespace": "Chayka\\Facebook",
+    "chaykaFramework": "external",
+    "chaykaFrameworkDeps": {
+        "helpers": true,
+        "mvc": true,
+        "wp": true,
+        "core": true
+    },
+    "support": [
+        "UriProcessing",
+        "ConsolePages",
+        "Metaboxes"
+    ],
+    "register": [
+        "registerActions",
+        "registerFilters",
+        "registerResources",
+        "registerRoutes",
+        "registerConsolePages",
+        "registerMetaboxes"
+    ]
+}

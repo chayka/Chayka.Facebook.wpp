@@ -1,0 +1,26 @@
+{
+    "name": "chayka/facebook-wpp",
+    "description": "Facebook integration for Chayka Framework",
+    "minimum-stability": "dev",
+    "license": "MIT",
+    "version": "0.0.1",
+    "authors": [
+        {
+            "name": "Boris Mossounov",
+            "email": "borix@tut.by"
+        }
+    ],
+    "autoload": {
+        "classmap": [
+            "app/helpers",
+            "app/models",
+            "Plugin.php"
+        ]
+    },
+    "require": {},
+    "requireDev": {},
+    "suggest": {
+        "chayka/wp": "dev-master",
+        "chayka/core-wpp": "dev-master"
+    }
+}
