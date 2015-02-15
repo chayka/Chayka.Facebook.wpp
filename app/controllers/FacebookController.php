@@ -2,6 +2,7 @@
 
 namespace Chayka\Facebook;
 
+use Chayka\Helpers\Util;
 use Chayka\WP\Models\UserModel;
 use Chayka\WP\MVC\Controller;
 use Chayka\Helpers\InputHelper;
@@ -77,7 +78,7 @@ class FacebookController extends Controller{
                                  ->setDisplayName($me->getName())
                                  ->setFirstName($me->getFirstName())
                                  ->setLastName($me->getLastName())
-                                 ->setNicename(sanitize_title(strtolower(join('.', array($me->getFirstName(), $me->getLastName())))))
+                                 ->setNicename(sanitize_title(Util::translit(strtolower(join('.', [$me->getFirstName(), $me->getLastName()])))))
                                  ->setPassword(wp_generate_password(12, false))
                                  ->insert();
                 if ($wpUserId) {
