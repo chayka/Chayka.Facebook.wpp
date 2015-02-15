@@ -62,6 +62,8 @@ class Plugin extends WP\Plugin{
         $this->setResSrcDir('src/');
         $this->setResDistDir('dist/');
 
+        $this->registerScript('chayka-facebook', 'ng-modules/chayka-facebook.js', ['chayka-auth']);
+
 		/* chayka: registerResources */
     }
 

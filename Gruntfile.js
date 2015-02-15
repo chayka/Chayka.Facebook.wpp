@@ -96,7 +96,7 @@ module.exports = function(grunt) {
                 },
                 files: {
                     'res/dist/js/application.js': resFiles.js,
-                    'res/dist/ng-modules/<%= pkg.name %>.min.js': resFiles.jsNg
+                    'res/dist/ng-modules/chayka-facebook.js': resFiles.jsNg
                 }
             }
         },
