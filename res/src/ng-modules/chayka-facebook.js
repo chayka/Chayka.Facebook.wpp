@@ -81,7 +81,7 @@ angular.module('chayka-auth')
                 if(event) {
                     event.preventDefault();
                 }
-                fb.getFB().login(function(response){}, {scope:'basic_info,email'});
+                fb.getFB().login(function(response){}, {scope:'public_profile,email'});
             },
 
             onFbLogin: function(FBResponse){
