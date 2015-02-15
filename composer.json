@@ -13,7 +13,6 @@
     "autoload": {
         "classmap": [
             "app/helpers",
-            "app/models",
             "Plugin.php"
         ]
     },
@@ -23,6 +22,7 @@
     "requireDev": {},
     "suggest": {
         "chayka/wp": "dev-master",
-        "chayka/core-wpp": "dev-master"
+        "chayka/core-wpp": "dev-master",
+        "chayka/auth-wpp": "dev-master"
     }
 }

@@ -38,10 +38,12 @@ class HtmlHelper extends \Chayka\WP\Helpers\HtmlHelper{
 	 * @param string $locale
 	 */
 	public static function renderJsInit($locale = ''){
-		self::renderView('facebook/js-init.phtml', array(
-			'appId' => FacebookHelper::getAppID(),
-			'locale' => $locale?$locale:NlsHelper::getLocale(),
-		));
+		if(FacebookHelper::isJsApiEnabled()) {
+			self::renderView( 'facebook/js-init.phtml', array(
+				'appId'  => FacebookHelper::getAppID(),
+				'locale' => $locale ? $locale : NlsHelper::getLocale(),
+			) );
+		}
 	}
 
 	/**

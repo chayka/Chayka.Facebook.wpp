@@ -11,6 +11,8 @@ namespace Chayka\Facebook;
 use Chayka\Helpers\Util;
 use Chayka\WP\Helpers\HtmlHelper;
 use Chayka\WP\Models;
+use Chayka\WP\Models\CommentModel;
+use Chayka\WP\Models\UserModel;
 
 class FacebookHelper {
 
@@ -274,6 +276,38 @@ class FacebookHelper {
 	}
 
 	/**
+	 * Check if need to enable JS API
+	 * @return boolean
+	 */
+	public static function isJsApiEnabled(){
+		return !!OptionHelper::getOption('init_js');
+	}
+
+	/**
+	 * Check if need to check FB user status on page load
+	 * @return boolean
+	 */
+	public static function isStatusChecked(){
+		return !!OptionHelper::getOption('init_status');
+	}
+
+	/**
+	 * Check if cookie is created by JS API
+	 * @return bool
+	 */
+	public static function isCookieCreated(){
+		return !!OptionHelper::getOption('init_cookie');
+	}
+
+	/**
+	 * Check if widget rendering enabled
+	 * @return bool
+	 */
+	public static function isWidgetsRenderEnabled(){
+		return !!OptionHelper::getOption('init_xfbml');
+	}
+
+	/**
 	 * Get all the data needed fo post sharing
 	 *
 	 * @param Models\PostModel $post
@@ -322,4 +356,75 @@ class FacebookHelper {
 		return $data;
 	}
 
+	/**
+	 * Replace GrAvatar with FBAvatar
+	 *
+	 * @param $avatar
+	 * @param $id_or_email
+	 * @param int $size
+	 *
+	 * @return mixed
+	 */
+	public static function filterGetFbAvatar($avatar, $id_or_email, $size = 96){
+		if(!$id_or_email){
+			return $avatar;
+		}
+		$user = null;
+		if(is_object($id_or_email)){
+			$user = UserModel::unpackDbRecord($id_or_email);
+		}else{
+			$user = is_email($id_or_email)?
+				UserModel::selectByEmail($id_or_email):
+				UserModel::selectById($id_or_email);
+		}
+		if($user){
+			$metaFbUseId = $user->getMeta('fb_user_id');
+			if($metaFbUseId){
+				if(!intval($size)){
+					$size = 96;
+				}
+				$avatarUrl = sprintf('//graph.facebook.com/%s/picture?type=square&width=%d&height=%d', $metaFbUseId, (int)$size, $size);
+				return preg_replace("%src='[^']*'%", "src='$avatarUrl'", $avatar);
+			}
+		}else{
+//            return preg_replace("%alt='[^']*'%", "alt='user not found'", $avatar);
+		}
+
+		return $avatar;
+	}
+
+	/**
+	 * Used to display comment FB avatar
+	 *
+	 * @param CommentModel $comment
+	 * @return CommentModel
+	 */
+	public function filterMarkCommentWithFbUserId($comment){
+		if($comment->getUserId()){
+			$user = UserModel::selectById($comment->getUserId());
+			if($user && $user->getMeta('fb_user_id')){
+				$comment->updateMeta('fb_user_id', $user->getMeta('fb_user_id'));
+			}
+		}
+		return $comment;
+	}
+
+	/**
+	 * Used for instant comment approval
+	 *
+	 * @param $approved
+	 * @param $rawComment
+	 *
+	 * @return bool
+	 */
+	public function filterApproveFbUserComment($approved, $rawComment){
+		$userId = Util::getItem($rawComment, 'user_id');
+		if(!$approved && $userId){
+			$user = UserModel::selectById($userId);
+			if($user && $user->getMeta('fb_user_id')){
+				$approved = true;
+			}
+		}
+		return $approved;
+	}
 }

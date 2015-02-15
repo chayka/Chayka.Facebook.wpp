@@ -21,6 +21,18 @@
             <div class="form_field fullsize default_image" data-form-field="default_image">
                 <label class="">Default Image (url)</label><input type="text" data-ng-init="options.default_image=''" data-ng-model="options.default_image" title="Default Image (url)"/>
             </div>
+            <div class="form_field stretch init_status" data-form-field="init_js">
+                <label class="width80">Init JS API</label><select data-ng-init="options.init_js='0'; yesNoOptions = {'0': 'No', '1': 'Yes'}" data-ng-options="key as value for (key, value) in yesNoOptions" data-ng-model="options.init_js" title="Init JS API"></select>
+            </div>
+            <div class="form_field stretch init_status" data-form-field="init_status">
+                <label class="width80">Check Status</label><select data-ng-init="options.init_status='0'; yesNoOptions = {'0': 'No', '1': 'Yes'}" data-ng-options="key as value for (key, value) in yesNoOptions" data-ng-model="options.init_status" title="Check Status"></select>
+            </div>
+            <div class="form_field stretch init_cookie" data-form-field="init_cookie">
+                <label class="width80">Create Cookie</label><select data-ng-init="options.init_cookie='0'; yesNoOptions = {'0': 'No', '1': 'Yes'}" data-ng-options="key as value for (key, value) in yesNoOptions" data-ng-model="options.init_cookie" title="Create Cookie"></select>
+            </div>
+            <div class="form_field stretch init_status" data-form-field="init_xfbml">
+                <label class="width80">Render FB Widgets</label><select data-ng-init="options.init_xfbml='0'; yesNoOptions = {'0': 'No', '1': 'Yes'}" data-ng-options="key as value for (key, value) in yesNoOptions" data-ng-model="options.init_xfbml" title="Render FB Widgets"></select>
+            </div>
 
 	        <!-- chayka: fields -->
             <div class="buttons">

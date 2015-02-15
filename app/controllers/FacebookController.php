@@ -12,7 +12,7 @@ class FacebookController extends Controller{
 
     public function init(){
         // NlsHelper::load('main');
-        // InputHelper::captureInput();
+         InputHelper::captureInput();
     }
 
     /**

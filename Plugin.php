@@ -37,6 +37,7 @@ class Plugin extends WP\Plugin{
      */
     public function registerActions() {
         $this->addAction('wp_head', array('Chayka\\Facebook\\HtmlHelper', 'renderMeta'));
+        $this->addAction('wp_head', array('Chayka\\Facebook\\HtmlHelper', 'renderJsInit'));
     	/* chayka: registerActions */
     }
 
@@ -44,6 +45,9 @@ class Plugin extends WP\Plugin{
      * Register your action hooks here using $this->addFilter();
      */
     public function registerFilters() {
+        $this->addFilter('get_avatar', ['Chayka\\Facebook\\FacebookHelper', 'filterGetFbAvatar'], 10, 3);
+        $this->addFilter('CommentModel.created', ['Chayka\\Facebook\\FacebookHelper', 'filterMarkCommentWithFbUserId']);
+        $this->addFilter('pre_comment_approved', ['Chayka\\Facebook\\FacebookHelper', 'filterApproveFbUserComment'], 10, 2);
 		/* chayka: registerFilters */
     }
 
@@ -72,7 +76,7 @@ class Plugin extends WP\Plugin{
      * Registering console pages
      */
     public function registerConsolePages(){
-        $this->addConsolePage('Facebook', 'update_core', 'facebook', '/admin/facebook', 'dashicons-facebook', '75');
+        $this->addConsolePage('Facebook', 'update_core', 'facebook', '/admin/facebook', 'dashicons-facebook', '76');
 
         /* chayka: registerConsolePages */
     }

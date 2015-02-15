@@ -1,4 +1,6 @@
 <?php
+namespace Chayka\Facebook;
+
 $this->declareVars([
 	'locale' => 'en_US',
 ]);
@@ -7,10 +9,10 @@ $this->declareVars([
 	window.fbAsyncInit = function() {
 		FB.init({
 			appId      : '<?php echo $this->appId;?>',
-			status     : true, // check login status
-			cookie     : true, // enable cookies to allow the server to access the session
-			xfbml      : true  // parse XFBML
-			version    : 'v2.1'
+			status     : <?php echo FacebookHelper::isStatusChecked()?'true':'false'?>, // check login status
+			cookie     : <?php echo FacebookHelper::isCookieCreated()?'true':'false'?>, // enable cookies to allow the server to access the session
+			xfbml      : <?php echo FacebookHelper::isWidgetsRenderEnabled()?'true':'false'?>,  // parse XFBML
+			version    : 'v2.2'
 		});
 	};
 
