@@ -15,6 +15,7 @@ class Plugin extends WP\Plugin{
     public static function init(){
         if(!static::$instance){
             static::$instance = $app = new self(__FILE__, array(
+                'facebook'
                 /* chayka: init-controllers */
             ));
 
