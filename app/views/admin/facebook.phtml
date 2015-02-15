@@ -1,0 +1,31 @@
+<h2>Facebook</h2>
+
+<div data-ng-app="chayka-options-form" data-ng-cloak>
+    <div data-ng-controller="optionsForm" data-ng-init="namespace = 'Chayka\Facebook'">
+        <form data-form-validator="validator" novalidate="novalidate">
+            <div class="form_field fullsize app_id" data-form-field="app_id">
+                <label class="">App ID</label><input type="text" data-ng-init="options.app_id=''" data-ng-model="options.app_id" title="App ID"/>
+            </div>
+            <div class="form_field fullsize app_secret" data-form-field="app_secret">
+                <label class="">App Secret</label><input type="text" data-ng-init="options.app_secret=''" data-ng-model="options.app_secret" title="App Secret"/>
+            </div>
+            <div class="form_field fullsize admins" data-form-field="admins">
+                <label class="">Admins</label><input type="text" data-ng-init="options.admins=''" data-ng-model="options.admins" title="Admins"/>
+            </div>
+            <div class="form_field fullsize default_title" data-form-field="default_title">
+                <label class="">Default Title</label><input type="text" data-ng-init="options.default_title=''" data-ng-model="options.default_title" title="Default Title"/>
+            </div>
+            <div class="form_field fullsize default_description" data-form-field="default_description">
+                <label class="">Default Description</label><textarea data-ng-init="options.default_description=''" data-ng-model="options.default_description" title="Default Description"></textarea>
+            </div>
+            <div class="form_field fullsize default_image" data-form-field="default_image">
+                <label class="">Default Image (url)</label><input type="text" data-ng-init="options.default_image=''" data-ng-model="options.default_image" title="Default Image (url)"/>
+            </div>
+
+	        <!-- chayka: fields -->
+            <div class="buttons">
+                <button class="button button-primary button-large" data-ng-click="saveOptions();">Save</button>
+            </div>
+        </form>
+    </div>
+</div>

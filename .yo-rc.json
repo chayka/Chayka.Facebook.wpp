@@ -43,6 +43,25 @@
     "appAuthorUri": "http://anotherguru.me/",
     "appLicense": "MIT",
     "ideaDeploymentServer": "WP Plugins",
-    "appClass": "Plugin"
+    "appClass": "Plugin",
+    "helpers": [
+      "nls",
+      "option"
+    ],
+    "metaboxes": [
+      "facebook"
+    ],
+    "controllers": {
+      "Metabox": [
+        "facebook"
+      ],
+      "Admin": [
+        "facebook"
+      ],
+      "Facebook": []
+    },
+    "consolePages": [
+      "facebook"
+    ]
   }
 }

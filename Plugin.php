@@ -3,6 +3,8 @@
 namespace Chayka\Facebook;
 
 use Chayka\WP;
+use Chayka\WP\Models\CommentModel;
+use Chayka\WP\Models\UserModel;
 
 class Plugin extends WP\Plugin{
 
@@ -15,6 +17,10 @@ class Plugin extends WP\Plugin{
             static::$instance = $app = new self(__FILE__, array(
                 /* chayka: init-controllers */
             ));
+
+            UserModel::addJsonMetaField('fb_user_id');
+            CommentModel::addJsonMetaField('fb_user_id');
+
             $app->dbUpdate(array());
 	        $app->addSupport_UriProcessing();
 	        $app->addSupport_ConsolePages();
@@ -30,6 +36,7 @@ class Plugin extends WP\Plugin{
      * Register your action hooks here using $this->addAction();
      */
     public function registerActions() {
+        $this->addAction('wp_head', array('Chayka\\Facebook\\HtmlHelper', 'renderMeta'));
     	/* chayka: registerActions */
     }
 
@@ -65,6 +72,8 @@ class Plugin extends WP\Plugin{
      * Registering console pages
      */
     public function registerConsolePages(){
+        $this->addConsolePage('Facebook', 'update_core', 'facebook', '/admin/facebook', 'dashicons-facebook', '75');
+
         /* chayka: registerConsolePages */
     }
     
@@ -72,6 +81,8 @@ class Plugin extends WP\Plugin{
      * Add custom metaboxes here via addMetaBox() calls;
      */
     public function registerMetaBoxes(){
+        $this->addMetaBox('facebook', 'Facebook', '/metabox/facebook', 'normal', 'high', null);
+
         /* chayka: registerMetaBoxes */
     }
 

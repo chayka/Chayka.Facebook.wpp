@@ -17,7 +17,9 @@
             "Plugin.php"
         ]
     },
-    "require": {},
+    "require": {
+        "facebook/php-sdk-v4": "~4.1@dev"
+    },
     "requireDev": {},
     "suggest": {
         "chayka/wp": "dev-master",

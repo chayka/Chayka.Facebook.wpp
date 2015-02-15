@@ -1,0 +1,18 @@
+<?php if($this->title):?>
+	<meta property="og:title" content="<?php echo $this->escape($this->title);?>"/>
+<?php endif; if($this->description):?>
+	<meta property="og:description" content="<?php echo $this->escape($this->description);?>"/>
+<?php endif; if($this->url):?>
+	<meta property="og:url" content="<?php echo $this->escape($this->url);?>"/>
+<?php endif; if($this->images): foreach($this->images as $image):?>
+	<meta property="og:image" content="<?php echo preg_replace_callback('/[А-Яа-я]+/u', create_function('$matches', 'return urlencode($matches[0]);'), $image);?>"/>
+<?php endforeach; endif; if($this->type):?>
+	<meta property="og:type" content="<?php echo $this->escape($this->type);?>"/>
+<?php endif; if($this->author):?>
+	<meta property="og:author" content="<?php echo $this->escape($this->author);?>"/>
+<?php endif; if($this->admins && count($this->admins)): foreach($this->admins as $admin):?>
+	<meta property="fb:admins" content="<?php echo $this->escape($admin);?>"/>
+<?php endforeach; endif; if($this->app_id):?>
+	<meta property="fb:app_id" content="<?php echo $this->escape($this->app_id);?>"/>
+<?php endif;?>
+<meta property="og:site_name" content="<?php echo \Chayka\Helpers\Util::serverName();?>"/>
