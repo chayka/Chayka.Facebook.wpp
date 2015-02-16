@@ -10,6 +10,7 @@ namespace Chayka\Facebook;
 
 
 use Chayka\WP\Helpers\ResourceHelper;
+use Chayka\WP\Models\PostModel;
 
 class HtmlHelper extends \Chayka\WP\Helpers\HtmlHelper{
 
@@ -53,6 +54,10 @@ class HtmlHelper extends \Chayka\WP\Helpers\HtmlHelper{
 	 * Render head > meta for sweet FB sharing
 	 */
 	public static function renderMeta(){
+		global $post;
+		if(is_single() || is_page()){
+			FacebookHelper::setPost(PostModel::unpackDbRecord($post));
+		}
 		self::renderView('facebook/meta.phtml', FacebookHelper::getFbData());
 	}
 
