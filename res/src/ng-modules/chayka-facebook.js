@@ -91,10 +91,11 @@ angular.module('chayka-auth')
                     showMessage: false,
                     errorMessage: $translate.instant('message_error_auth_failed'),
                     success: function(data){
-                        console.dir({'data': data});
-                        angular.extend(fb.currentUser, data.payload);
-                        $(document).trigger('userChanged', data.payload);
-                        $(document).trigger('Facebook.Auth.userLoggedIn');
+                        //console.dir({'data': data});
+                        $scope.$emit('Chayka.Users.currentUserChanged', data.payload);
+                        //angular.extend(fb.currentUser, data.payload);
+                        //$(document).trigger('userChanged', data.payload);
+                        //$(document).trigger('Facebook.Auth.userLoggedIn');
                     },
                     complete: function(data){
                     }
