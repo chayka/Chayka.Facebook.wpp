@@ -4,6 +4,8 @@ angular.module('chayka-auth')
         var $ = angular.element;
         var fb = {
 
+            $scope: null,
+
             notAuthorized: false,
             FB: window.FB,
             currentUser: window.Chayka.Users.currentUser,
@@ -92,7 +94,7 @@ angular.module('chayka-auth')
                     errorMessage: $translate.instant('message_error_auth_failed'),
                     success: function(data){
                         //console.dir({'data': data});
-                        $scope.$emit('Chayka.Users.currentUserChanged', data.payload);
+                        fb.$scope.$emit('Chayka.Users.currentUserChanged', data.payload);
                         //angular.extend(fb.currentUser, data.payload);
                         //$(document).trigger('userChanged', data.payload);
                         //$(document).trigger('Facebook.Auth.userLoggedIn');
@@ -107,6 +109,7 @@ angular.module('chayka-auth')
             restrict: 'A',
             link: function($scope, element){
                 fb.getFB();
+                fb.$scope = $scope;
                 $(document).on('logout', fb.logout);
                 $(element).click(fb.onLoginButtonClicked);
             }
