@@ -56,7 +56,10 @@ class HtmlHelper extends \Chayka\WP\Helpers\HtmlHelper{
 	public static function renderMeta(){
 		global $post;
 		if(is_single() || is_page()){
+			FacebookHelper::setType('article');
 			FacebookHelper::setPost(PostModel::unpackDbRecord($post));
+		}else{
+			FacebookHelper::setType('website');
 		}
 		self::renderView('facebook/meta.phtml', FacebookHelper::getFbData());
 	}
