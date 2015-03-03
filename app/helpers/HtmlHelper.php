@@ -9,6 +9,7 @@
 namespace Chayka\Facebook;
 
 
+use Chayka\WP\Helpers\AngularHelper;
 use Chayka\WP\Helpers\ResourceHelper;
 use Chayka\WP\Models\PostModel;
 
@@ -46,6 +47,7 @@ class HtmlHelper extends \Chayka\WP\Helpers\HtmlHelper{
 				'appId'  => FacebookHelper::getAppID(),
 				'locale' => $locale ? $locale : NlsHelper::getLocale(),
 			) );
+			AngularHelper::enqueueScriptStyle('chayka-auth');
 			ResourceHelper::enqueueScript('chayka-facebook');
 		}
 	}
