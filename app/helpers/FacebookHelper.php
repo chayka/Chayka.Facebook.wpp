@@ -9,7 +9,6 @@
 namespace Chayka\Facebook;
 
 use Chayka\Helpers\Util;
-use Chayka\WP\Helpers\HtmlHelper;
 use Chayka\WP\Models;
 use Chayka\WP\Models\CommentModel;
 use Chayka\WP\Models\UserModel;
