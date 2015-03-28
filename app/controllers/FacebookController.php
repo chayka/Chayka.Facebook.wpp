@@ -88,6 +88,8 @@ class FacebookController extends Controller{
                 }
             }
 
+	        $_SESSION['fb_access_token'] = $accessToken;
+
             /**
              * Authenticating WP user
              */

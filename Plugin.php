@@ -2,9 +2,13 @@
 
 namespace Chayka\Facebook;
 
+use Chayka\Helpers\CurlHelper;
+use Chayka\Helpers\Util;
 use Chayka\WP;
 use Chayka\WP\Models\CommentModel;
 use Chayka\WP\Models\UserModel;
+use Facebook;
+
 
 class Plugin extends WP\Plugin{
 
@@ -37,8 +41,22 @@ class Plugin extends WP\Plugin{
      * Register your action hooks here using $this->addAction();
      */
     public function registerActions() {
-        $this->addAction('wp_head', array('Chayka\\Facebook\\HtmlHelper', 'renderMeta'));
-        $this->addAction('wp_head', array('Chayka\\Facebook\\HtmlHelper', 'renderJsInit'));
+        $this->addAction('wp_head', ['Chayka\\Facebook\\HtmlHelper', 'renderMeta']);
+        $this->addAction('wp_head', ['Chayka\\Facebook\\HtmlHelper', 'renderJsInit']);
+	    $this->addAction('wp_logout', function(){
+		    $accessToken = Util::getItem($_SESSION, 'fb_access_token');
+		    if($accessToken){
+			    $fb = new Facebook\Facebook([
+				    'app_id' => FacebookHelper::getAppID(),
+				    'app_secret' => FacebookHelper::getAppSecret(),
+				    'default_access_token' => $accessToken, // optional
+			    ]);
+			    $logoutUrl = $fb->getRedirectLoginHelper()->getLogoutUrl($accessToken, ($_SERVER['HTTPS']?'https://':'http://').$_SERVER['SERVER_NAME']);
+			    CurlHelper::get($logoutUrl);
+			    unset($_SESSION['fb_access_token']);
+			    session_commit();
+		    }
+	    });
     	/* chayka: registerActions */
     }
 
