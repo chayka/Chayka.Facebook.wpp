@@ -7,7 +7,7 @@ angular.module('chayka-auth')
             $scope: null,
 
             notAuthorized: false,
-            FB: window.FB,
+            FB: null, //window.FB,
             currentUser: window.Chayka.Users.currentUser,
 
             getFB: function(){
