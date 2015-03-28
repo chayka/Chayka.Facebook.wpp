@@ -112,6 +112,10 @@ angular.module('chayka-auth')
                 fb.$scope = $scope;
                 $(document).on('logout', fb.logout);
                 $(element).click(fb.onLoginButtonClicked);
+                $scope.$on('Chayka.Users.currentUserChanged', function(user){
+                    console.dir({'Facebook.currentUserChanged': user});
+                });
+
             }
         };
     }])
