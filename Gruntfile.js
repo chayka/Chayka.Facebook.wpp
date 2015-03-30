@@ -90,15 +90,21 @@ module.exports = function(grunt) {
             }
         },
         uglify: {
-            production: {
+            ng: {
                 options: {
                     mangle: false
                 },
                 files: {
-                    'res/dist/js/application.js': resFiles.js,
                     'res/dist/ng-modules/chayka-facebook.js': resFiles.jsNg
                 }
+            },
+            js: {
+                expand: false,
+                cwd: 'res/src/js/',
+                src: ['**/*.js'],
+                dest: 'res/dist/js/'
             }
+
         },
 
         //  images:
@@ -122,7 +128,7 @@ module.exports = function(grunt) {
         },
         watch: {
             js: {
-                files: resFiles.jsNg,
+                files: resFiles.js.concat(resFiles.jsNg),
                 tasks: ['js']
             },
             less: {

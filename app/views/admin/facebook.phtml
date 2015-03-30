@@ -33,6 +33,10 @@
             <div class="form_field stretch init_status" data-form-field="init_xfbml">
                 <label class="width80">Render FB Widgets</label><select data-ng-init="options.init_xfbml='0'; yesNoOptions = {'0': 'No', '1': 'Yes'}" data-ng-options="key as value for (key, value) in yesNoOptions" data-ng-model="options.init_xfbml" title="Render FB Widgets"></select>
             </div>
+            <div class="form_field stretch js_sdk_source" data-form-field="jsSdkSource">
+                <label class="width50">JS SDK Source</label><select data-ng-init="options.jsSdkSource='remote'; jsSdkSourceOptions = {'remote':'Remote','local':'Local'}" data-ng-model="options.jsSdkSource" data-ng-options="key as value for (key, value) in jsSdkSourceOptions" title="JS SDK Source"></select>
+            </div>
+
 
 	        <!-- chayka: fields -->
             <div class="buttons">

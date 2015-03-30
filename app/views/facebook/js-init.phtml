@@ -2,8 +2,14 @@
 namespace Chayka\Facebook;
 
 $this->declareVars([
-	'locale' => 'en_US',
+	'locale' => 'en-US',
 ]);
+
+$localSdk = Plugin::getInstance()->getUrlRes('lib/facebook/sdk.'.$this->locale.'.js');
+$this->locale = str_replace('-', '_', $this->locale);
+$remoteSdk = "//connect.facebook.net/".$this->locale."/sdk.js";
+$sdkSrc = OptionHelper::getOption('jsSdkSource', 'remote') === 'remote'?$remoteSdk:$localSdk;
+
 ?>
 <script>
 	window.fbAsyncInit = function() {
@@ -20,7 +26,7 @@ $this->declareVars([
 		var js, fjs = d.getElementsByTagName(s)[0];
 		if (d.getElementById(id)) {return;}
 		js = d.createElement(s); js.id = id;
-		js.src = "//connect.facebook.net/<?php echo $this->locale;?>/sdk.js";
+		js.src = "<?php echo $sdkSrc;?>";
 		fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));
 </script>
