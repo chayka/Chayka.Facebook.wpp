@@ -1,7 +1,6 @@
 'use strict';
 angular.module('chayka-auth')
-    .directive('authFacebookButton', ['$translate', 'ajax', function($translate, ajax){
-        var $ = angular.element;
+    .factory('facebook', ['ajax', 'auth', '$translate', function(ajax, auth, $translate){
         var fb = {
 
             $scope: null,
@@ -104,6 +103,12 @@ angular.module('chayka-auth')
                 });
             }
         };
+
+        auth.Facebook = fb;
+        return fb;
+    }])
+    .directive('authFacebookButton', ['facebook', function(fb){
+        var $ = angular.element;
 
         return {
             restrict: 'A',

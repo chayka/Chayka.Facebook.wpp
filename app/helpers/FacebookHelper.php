@@ -399,7 +399,7 @@ class FacebookHelper {
 	 * @param CommentModel $comment
 	 * @return CommentModel
 	 */
-	public function filterMarkCommentWithFbUserId($comment){
+	public static function filterMarkCommentWithFbUserId($comment){
 		if($comment->getUserId()){
 			$user = UserModel::selectById($comment->getUserId());
 			if($user && $user->getMeta('fb_user_id')){
@@ -417,7 +417,7 @@ class FacebookHelper {
 	 *
 	 * @return bool
 	 */
-	public function filterApproveFbUserComment($approved, $rawComment){
+	public static function filterApproveFbUserComment($approved, $rawComment){
 		$userId = Util::getItem($rawComment, 'user_id');
 		if(!$approved && $userId){
 			$user = UserModel::selectById($userId);
