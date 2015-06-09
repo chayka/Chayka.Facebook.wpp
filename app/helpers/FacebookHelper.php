@@ -383,8 +383,15 @@ class FacebookHelper {
 				if(!intval($size)){
 					$size = 96;
 				}
-				$avatarUrl = sprintf('//graph.facebook.com/%s/picture?type=square&width=%d&height=%d', $metaFbUseId, (int)$size, $size);
-				return preg_replace("%src='[^']*'%", "src='$avatarUrl'", $avatar);
+				$avatarUrl = sprintf('//graph.facebook.com/%s/picture?type=square&width=%d&height=%d', $metaFbUseId, (int)$size, (int)$size);
+				$avatarUrl2x = sprintf('//graph.facebook.com/%s/picture?type=square&width=%d&height=%d', $metaFbUseId, (int)$size*2, (int)$size*2);
+				return preg_replace(array(
+					"%src='[^']*'%",
+					"%srcset='[^']*'%",
+				), array(
+					"src='$avatarUrl'",
+					"srcset='$avatarUrl2x 2x'",
+				), $avatar);
 			}
 		}else{
 //            return preg_replace("%alt='[^']*'%", "alt='user not found'", $avatar);
