@@ -1,6 +1,6 @@
 'use strict';
 angular.module('chayka-auth')
-    .factory('facebook', ['ajax', 'auth', '$translate', function(ajax, auth, $translate){
+    .factory('facebook', ['ajax', 'auth', 'nls', function(ajax, auth, nls){
         var fb = {
 
             $scope: null,
@@ -90,7 +90,7 @@ angular.module('chayka-auth')
                 ajax.post('/api/facebook/login', FBResponse.authResponse, {
                     spinner: false,
                     showMessage: false,
-                    errorMessage: $translate.instant('message_error_auth_failed'),
+                    errorMessage: nls._('message_error_auth_failed'),
                     success: function(data){
                         //console.dir({'data': data});
                         fb.$scope.$emit('Chayka.Users.currentUserChanged', data.payload);

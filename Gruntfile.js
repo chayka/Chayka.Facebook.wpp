@@ -27,8 +27,11 @@ module.exports = function(grunt) {
                 }
             },
             developmentNg:{
-                files:{
-                }
+                expand: true,
+                flatten: true,
+                src: 'res/src/ng-modules/*.less',
+                dest: 'res/src/ng-modules/',
+                ext: '.css'
             }
         },
         autoprefixer: {
@@ -59,9 +62,10 @@ module.exports = function(grunt) {
                 }
             },
             ng: {
-                files: {
-                    'res/dist/ng-modules/chayka-facebook.css': ['res/src/ng-modules/*.css']
-                }
+                expand: true,
+                flatten: true,
+                src: 'res/src/ng-modules/*.css',
+                dest: 'res/dist/ng-modules/'
             }
         },
         concat: {
@@ -94,14 +98,18 @@ module.exports = function(grunt) {
                 options: {
                     mangle: false
                 },
-                files: {
-                    'res/dist/ng-modules/chayka-facebook.js': resFiles.jsNg
-                }
+                //files: {
+                //    'res/dist/ng-modules/chayka-facebook.js': resFiles.jsNg
+                //}
+                expand: true,
+                flatten: true,
+                src: 'res/src/ng-modules/*.js',
+                dest: 'res/dist/ng-modules/'
             },
             js: {
-                expand: false,
-                cwd: 'res/src/js/',
-                src: ['**/*.js'],
+                expand: true,
+                flatten: true,
+                src: 'res/src/js/*.js',
                 dest: 'res/dist/js/'
             }
 
@@ -158,6 +166,6 @@ module.exports = function(grunt) {
 
     grunt.registerTask('img', ['imagemin']);
 
-    grunt.registerTask('default', ['css', 'js', 'img', 'clean:all']);
+    grunt.registerTask('default', ['css', 'js', 'img', 'clean:all', 'watch']);
 
 };
