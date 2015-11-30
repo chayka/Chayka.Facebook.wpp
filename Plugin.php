@@ -81,7 +81,11 @@ class Plugin extends WP\Plugin{
         $this->setResSrcDir('src/');
         $this->setResDistDir('dist/');
 
-        $this->registerScript('chayka-facebook', 'ng-modules/chayka-facebook.js', ['chayka-auth']);
+        $this->populateResUrl('facebook');
+
+        $this->registerScript('chayka-facebook', 'ng/chayka-facebook.js', ['chayka-auth']);
+        $this->registerNgScript('chayka-facebook-thumbnail-generator', 'ng/chayka-facebook-thumbnail-generator.js', ['chayka-forms', 'chayka-nls', 'chayka-utils', 'chayka-wp-admin']);
+        $this->registerNgStyle('chayka-facebook-thumbnail-generator', 'ng/chayka-facebook-thumbnail-generator.css', ['chayka-forms', 'chayka-wp-admin']);
 
 		/* chayka: registerResources */
     }
@@ -106,7 +110,7 @@ class Plugin extends WP\Plugin{
      * Add custom metaboxes here via addMetaBox() calls;
      */
     public function registerMetaBoxes(){
-        $this->addMetaBox('facebook', 'Facebook', '/metabox/facebook', 'normal', 'high', null);
+        $this->addMetaBox('facebook-open-graph', 'Facebook Open Graph', '/metabox/facebook-open-graph', 'normal', 'high', null);
 
         /* chayka: registerMetaBoxes */
     }

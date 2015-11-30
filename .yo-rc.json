@@ -49,11 +49,13 @@
       "option"
     ],
     "metaboxes": [
-      "facebook"
+      "facebook",
+      "facebook-open-graph"
     ],
     "controllers": {
       "Metabox": [
-        "facebook"
+        "facebook",
+        "facebook-open-graph"
       ],
       "Admin": [
         "facebook"

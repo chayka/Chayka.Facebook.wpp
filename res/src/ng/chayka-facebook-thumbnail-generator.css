@@ -1,0 +1,28 @@
+.chayka-facebook-thumbnail_generator > .thumbnail_preview {
+  width: 600px;
+  height: 315px;
+  background-color: black;
+  background-size: cover;
+  position: relative;
+}
+.chayka-facebook-thumbnail_generator > .thumbnail_preview .preview_fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+}
+.chayka-facebook-thumbnail_generator > .thumbnail_preview .preview_logo {
+  z-index: 2;
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  width: 10%;
+  height: auto;
+}
+.chayka-facebook-thumbnail_generator > .thumbnail_editor > .tabs > .tab {
+  display: inline-block;
+  cursor: pointer;
+  margin-right: 1em;
+}

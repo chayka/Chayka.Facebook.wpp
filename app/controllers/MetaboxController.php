@@ -21,7 +21,7 @@ class MetaboxController extends Controller{
         $this->enqueueStyle('chayka-wp-admin');
     }
 
-    public function facebookAction(){
-
+    public function facebookOpenGraphAction(){
+        $this->enqueueNgScriptStyle('chayka-facebook-thumbnail-generator');
     }
 }

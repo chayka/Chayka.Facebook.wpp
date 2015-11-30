@@ -4,42 +4,34 @@ module.exports = function(grunt) {
 
     var resFiles = {
         less: ['res/src/css/**/*.less'],
-        css: ['res/tmp/css/**/*.css'],
+        css: ['res/src/css/**/*.css'],
         js: ['res/src/js/**/*.js'],
-        img: ['res/src/js/**/*.{png,jpg,gif}'],
+        img: ['res/src/img/**/*.{png,jpg,gif}'],
 
-        lessNg: ['res/src/ng-modules/**/*.less'],
-        cssNg: ['res/src/ng-modules/*.css'],
-        jsNg: ['res/src/ng-modules/*.js']
+        lessNg: ['res/src/ng/**/*.less'],
+        cssNg: ['res/src/ng/**/*.css'],
+        jsNg: ['res/src/ng/**/*.js'],
+        htmlNg: ['res/src/ng/**/*.html']
     };
-
-    var chayka = grunt.file.readJSON('chayka.json');
-    var isPlugin = chayka.appType === 'plugin';
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
         // styles:
         less: {
-            development:{
-                files:{
-                    'res/tmp/css/less.css': resFiles.less
-                }
-            },
-            developmentNg:{
-                expand: true,
+            less:{
                 flatten: true,
-                src: 'res/src/ng-modules/*.less',
-                dest: 'res/src/ng-modules/',
+                expand: true,
+                src: resFiles.less,
+                dest: 'res/src/css/',
                 ext: '.css'
-            }
-        },
-        autoprefixer: {
-            options: {
-                browsers: ['last 2 versions']
             },
-            development: {
-                src: resFiles.css.concat(resFiles.cssNg)
+            ng:{
+                flatten: true,
+                expand: true,
+                src: resFiles.lessNg,
+                dest: 'res/src/ng/',
+                ext: '.css'
             }
         },
         csslint: {
@@ -50,39 +42,51 @@ module.exports = function(grunt) {
                 src: resFiles.css.concat(resFiles.cssNg)
             }
         },
-        cssmin: {
-            theme: {
-                files: {
-                    'res/tmp/css/min.css': ['res/tmp/css/less.css']
-                }
+        autoprefixer: {
+            options: {
+                browsers: ['last 2 versions']
             },
-            plugin: {
-                files: {
-                    'res/dist/css/style.css': ['res/tmp/css/less.css']
-                }
+            css: {
+                flatten: true,
+                expand: true,
+                src: resFiles.css,
+                dest: 'res/dist/css/'
             },
             ng: {
-                expand: true,
                 flatten: true,
-                src: 'res/src/ng-modules/*.css',
-                dest: 'res/dist/ng-modules/'
+                expand: true,
+                src: resFiles.cssNg,
+                dest: 'res/dist/ng/'
             }
         },
-        concat: {
-            options: {
-                // define a string to put between each file in the concatenated output
-                //separator: ';\n'
+        cssmin: {
+            css: {
+                flatten: true,
+                expand: true,
+                src: 'res/dist/css/**/*.css',
+                dest: 'res/dist/css/'
             },
-            theme: {
-                // the files to concatenate
-                files:{
-                    'style.css':[
-                        'res/src/theme-header.css',
-                        'res/tmp/css/min.css'
-                    ]
-                }
+            ng: {
+                flatten: true,
+                expand: true,
+                src: 'res/dist/ng/**/*.css',
+                dest: 'res/dist/ng/'
             }
         },
+        //concat: {
+        //    options: {
+        //        // define a string to put between each file in the concatenated output
+        //        //separator: ';\n'
+        //    },
+        //    theme: {
+        //        // the files to concatenate
+        //        files:{
+        //            'style.css':[
+        //                'res/src/theme-header.css'
+        //            ]
+        //        }
+        //    }
+        //},
 
         //  scripts:
         jshint: {
@@ -94,35 +98,42 @@ module.exports = function(grunt) {
             }
         },
         uglify: {
-            ng: {
-                options: {
-                    mangle: false
-                },
-                //files: {
-                //    'res/dist/ng-modules/chayka-facebook.js': resFiles.jsNg
-                //}
-                expand: true,
-                flatten: true,
-                src: 'res/src/ng-modules/*.js',
-                dest: 'res/dist/ng-modules/'
-            },
             js: {
-                expand: true,
                 flatten: true,
-                src: 'res/src/js/*.js',
+                expand: true,
+                src: 'res/src/js/**/*.js',
                 dest: 'res/dist/js/'
+            },
+            ng: {
+                flatten: true,
+                expand: true,
+                src: 'res/src/ng/**/*.js',
+                dest: 'res/dist/ng/'
             }
+        },
 
+        //  html templates
+        htmlmin:{
+            options: {
+                removeComments: true,
+                collapseWhitespace: true
+            },
+            ng: {
+                flatten: true,
+                expand: true,
+                src: 'res/src/ng/**/*.html',
+                dest: 'res/dist/ng/'
+            }
         },
 
         //  images:
-        imagemin: {                          
-            dynamic: {                         
+        imagemin: {
+            dynamic: {
                 files: [{
-                    expand: true,               
-                    cwd: 'res/src/img/',        
+                    expand: true,
+                    cwd: 'res/src/img/',
                     src: ['**/*.{png,jpg,gif}'],
-                    dest: 'res/dist/img/'       
+                    dest: 'res/dist/img/'
                 }]
             }
         },
@@ -132,16 +143,25 @@ module.exports = function(grunt) {
             css: ['res/tmp/css'],
             js: ['res/tmp/js'],
             img: ['res/tmp/img'],
-            all: ['res/tmp']
+            all: ['res/tmp'],
+            dist: ['res/dist']
         },
         watch: {
+            less: {
+                files:  resFiles.less.concat(resFiles.lessNg),
+                tasks: ['less']
+            },
+            css: {
+                files:  resFiles.css.concat(resFiles.cssNg),
+                tasks: ['css']
+            },
             js: {
                 files: resFiles.js.concat(resFiles.jsNg),
                 tasks: ['js']
             },
-            less: {
-                files:  resFiles.lessNg,
-                tasks: ['css']
+            html: {
+                files:  resFiles.htmlNg,
+                tasks: ['htmlmin']
             },
             img: {
                 files:  resFiles.img,
@@ -156,16 +176,12 @@ module.exports = function(grunt) {
     // Making grunt default to force in order not to break the project.
     grunt.option('force', true);
 
-    grunt.registerTask('css-theme', ['less', 'autoprefixer', 'csslint', 'cssmin:theme', 'cssmin:ng', 'concat:theme', 'clean:css']);
+    grunt.registerTask('css', ['csslint', 'autoprefixer', 'cssmin']);
 
-    grunt.registerTask('css-plugin', ['less', 'autoprefixer', 'csslint', 'cssmin:plugin', 'cssmin:ng', 'clean:css']);
-
-    grunt.registerTask('css', isPlugin?['css-plugin']:['css-theme']);
-
-    grunt.registerTask('js', ['jshint', 'uglify', 'clean:js']);
+    grunt.registerTask('js', ['jshint', 'uglify']);
 
     grunt.registerTask('img', ['imagemin']);
 
-    grunt.registerTask('default', ['css', 'js', 'img', 'clean:all', 'watch']);
+    grunt.registerTask('default', ['clean:dist', 'less', 'css', 'js', 'img', 'htmlmin', 'watch']);
 
 };

@@ -1,25 +1,26 @@
 {
-    "name": "Chayka.Facebook",
-    "description": "Facebook integration for Chayka Framework",
-    "version": "0.0.1",
-    "author": "Boris Mossounov <borix@tut.by>",
-    "dependencies": {},
-    "devDependencies": {
-        "grunt": "*",
-        "grunt-autoprefixer": "*",
-        "grunt-contrib-clean": "*",
-        "grunt-contrib-concat": "*",
-        "grunt-contrib-csslint": "*",
-        "grunt-contrib-cssmin": "*",
-        "grunt-contrib-imagemin": "*",
-        "grunt-contrib-jshint": "*",
-        "grunt-contrib-less": "*",
-        "grunt-contrib-uglify": "*",
-        "grunt-contrib-watch": "*",
-        "load-grunt-tasks": "*"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git@github.com:chayka/Chayka.Facebook.wpp.git"
-    }
+  "name": "Chayka.Facebook",
+  "description": "Facebook integration for Chayka Framework",
+  "version": "0.0.1",
+  "author": "Boris Mossounov <borix@tut.by>",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-autoprefixer": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-csslint": "*",
+    "grunt-contrib-cssmin": "*",
+    "grunt-contrib-imagemin": "*",
+    "grunt-contrib-htmlmin": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-less": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "load-grunt-tasks": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:chayka/Chayka.Facebook.wpp.git"
+  }
 }

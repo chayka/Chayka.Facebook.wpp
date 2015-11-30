@@ -1,0 +1,54 @@
+.chayka-facebook-thumbnail_generator{
+
+    & > .thumbnail_preview{
+        width: 600px;
+        height: 315px;
+        background-color: black;
+        background-size: cover;
+        position: relative;
+
+        .preview_fade{
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 1;
+        }
+
+        .preview_logo{
+            z-index: 2;
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            width: 10%;
+            height: auto;
+        }
+    }
+
+    & > .thumbnail_editor{
+        & > .tabs{
+            & > .tab{
+                display: inline-block;
+                cursor: pointer;
+                margin-right: 1em;
+                &.background{
+
+                }
+                &.logo{
+
+                }
+            }
+        }
+        & > .forms{
+            & > .form{
+                &.background{
+
+                }
+                &.logo{
+
+                }
+            }
+        }
+    }
+}

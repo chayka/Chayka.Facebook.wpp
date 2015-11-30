@@ -1,0 +1,57 @@
+<div class="metabox" data-ng-cloak data-ng-controller="metabox">
+	<div data-form-validator="validator">
+        <?php /* fb_title */
+            $name = 'metabox-fb_title';
+            $value = $this->post->getMeta('fb_title');
+        ?>
+		<div class="form_field fullsize fb_title" data-form-field="fb_title">
+			<label class="">Title (og:title)</label><input name = "<?php echo $name;?>" type="text" data-ng-init="meta.fb_title='<?php $this->escape($value); ?>' || ''" data-ng-model="meta.fb_title" title="Title (og:title)"/>
+		</div>
+        <?php /* fb_description */
+            $name = 'metabox-fb_description';
+            $value = $this->post->getMeta('fb_description');
+        ?>
+		<div class="form_field fullsize fb_description" data-form-field="fb_description">
+			<label  class="">Description (og:description)</label><textarea name = "<?php echo $name;?>" data-ng-init="meta.fb_description='<?php $this->escape($value); ?>' || ''" data-ng-model="meta.fb_description" title="Description (og:description)"></textarea>
+		</div>
+        <?php /* fb_thumbnail */
+//            $name = 'metabox-fb_thumbnail';
+//            $value = $this->post->getMeta('fb_thumbnail');
+//            wp_enqueue_media();
+        ?>
+        <!--div class="form_field fullsize fb_thumbnail" data-form-field="fb_thumbnail">
+            <label class="">Thumbnail (og:image)</label>
+            <input name="<?php echo $name;?>" value="{{meta.fb_thumbnail}}" type="hidden" data-ng-init="meta.fb_thumbnail='<?php $this->escape($value); ?>'" data-ng-model="meta.fb_thumbnail" title="Thumbnail (og:image)"/>
+            <div data-media-picker data-mode="id" data-size="full" data-model="meta.fb_thumbnail" data-picker-button-text="Pick Image" data-title="Thumbnail" >
+                Recommended: 1200 x 630px, min: 600 x 315
+            </div>
+        </div-->
+        <?php /* fb_thumbnail */
+        $name = 'metabox-fb_thumbnail';
+        $value = $this->post->getMeta('fb_thumbnail');
+        $def = [
+            'background' => '',
+            'logo' => '',
+            'fade' => [
+                'color' => '#000000',
+                'opacity' => 50
+            ]
+        ];
+        if(!$value){
+            $value = $def;
+        }else{
+            $value = array_merge($def, json_decode($value, true));
+        }
+        wp_enqueue_media();
+        ?>
+        <div class="form_field fullsize fb_thumbnail" data-form-field="fb_thumbnail">
+            <label class="">Thumbnail (og:image)</label>
+            <input name="<?php echo $name;?>" value="{{meta.fb_thumbnail | json}}" type="hidden" data-ng-init="meta.fb_thumbnail=<?php $this->json($value, true); ?>" data-ng-model="meta.fb_thumbnail" title="Thumbnail (og:image)"/>
+            <div data-facebook-thumbnail-generator data-model="meta.fb_thumbnail"></div>
+        </div>
+
+
+
+        <!-- chayka: fields -->
+    </div>
+</div>
