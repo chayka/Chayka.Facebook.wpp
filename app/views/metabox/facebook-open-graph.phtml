@@ -1,7 +1,8 @@
+<?php //use Chayka\Helpers\Util; ?>
 <div class="metabox" data-ng-cloak data-ng-controller="metabox">
 	<div data-form-validator="validator">
         <?php /* fb_title */
-            $name = 'metabox-fb_title';
+            $name      = 'metabox-fb_title';
             $value = $this->post->getMeta('fb_title');
         ?>
 		<div class="form_field fullsize fb_title" data-form-field="fb_title">
@@ -29,6 +30,18 @@
         <?php /* fb_thumbnail */
         $name = 'metabox-fb_thumbnail';
         $value = $this->post->getMeta('fb_thumbnail');
+        $this->post->loadTerms();
+        /**
+         * @var \Chayka\WP\Models\PostModel $p
+         */
+        $p      = $this->post;
+        $blocks = [
+            'title' => $p->getTitle(),
+            'excerpt' => $p->getExcerpt(),
+            'categories' => join(', ', $p->getTerms('category')),
+            'tags' => join(', ', $p->getTerms('post_tag')),
+        ];
+
         $def = [
             'background' => '',
             'logo' => '',
@@ -37,17 +50,29 @@
                 'opacity' => 50
             ]
         ];
+
+        foreach($blocks as $block=>$text){
+            $def[$block] = [
+                'active' => 'title' === $block,
+                'color' => '#FFFFFF',
+                'size' => 20
+            ];
+        }
+
         if(!$value){
             $value = $def;
         }else{
             $value = array_merge($def, json_decode($value, true));
         }
+
+        $this->declareVars(['fonts' => []]);
+
         wp_enqueue_media();
         ?>
         <div class="form_field fullsize fb_thumbnail" data-form-field="fb_thumbnail">
             <label class="">Thumbnail (og:image)</label>
-            <input name="<?php echo $name;?>" value="{{meta.fb_thumbnail | json}}" type="hidden" data-ng-init="meta.fb_thumbnail=<?php $this->json($value, true); ?>" data-ng-model="meta.fb_thumbnail" title="Thumbnail (og:image)"/>
-            <div data-facebook-thumbnail-generator data-model="meta.fb_thumbnail"></div>
+            <input name="<?php echo $name;?>" value="{{meta.fb_thumbnail | json}}" type="hidden" data-ng-init="meta.fb_thumbnail=<?php $this->json($value, true); ?>; postData=<?php $this->json($blocks, true); ?>; fonts = <?php $this->json($this->fonts, true); ?>;" data-ng-model="meta.fb_thumbnail" title="Thumbnail (og:image)"/>
+            <div data-facebook-thumbnail-generator data-model="meta.fb_thumbnail" data-blocks="postData" data-fonts="fonts"></div>
         </div>
 
 

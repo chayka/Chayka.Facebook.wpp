@@ -23,5 +23,13 @@ class MetaboxController extends Controller{
 
     public function facebookOpenGraphAction(){
         $this->enqueueNgScriptStyle('chayka-facebook-thumbnail-generator');
+
+        FontHelper::init('res/fonts', Plugin::getInstance());
+
+        $url = FontHelper::createCssFile('fonts.css');
+
+        wp_enqueue_style('facebook-gd2-fonts', $url);
+
+        $this->view->assign('fonts', FontHelper::getTrueTypeFontNames());
     }
 }

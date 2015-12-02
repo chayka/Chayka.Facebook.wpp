@@ -24,5 +24,15 @@
         "chayka/wp": "dev-master",
         "chayka/core-wpp": "dev-master",
         "chayka/auth-wpp": "dev-master"
+    },
+    "scripts":{
+        "post-install-cmd": [
+            "mkdir res/fonts",
+            "chmod +w res/fonts"
+        ],
+        "post-update-cmd": [
+        ]
+
     }
+
 }
