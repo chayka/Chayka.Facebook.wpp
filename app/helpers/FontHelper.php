@@ -10,6 +10,7 @@ namespace Chayka\Facebook;
 
 
 use Chayka\Helpers\FsHelper;
+use Chayka\Helpers\Util;
 
 class FontHelper{
 
@@ -61,7 +62,7 @@ class FontHelper{
         foreach($files as $file){
             $ext = strtolower(FsHelper::getExtension($file));
             $name = preg_replace('/\.' . $ext . '$/is', '', $file);
-            if(self::$formats[$ext]){
+            if(isset(self::$formats[$ext])){
                 static::$fonts[$name][$ext] = $file;
             }
         }
@@ -114,6 +115,12 @@ class FontHelper{
         }
 
         return '';
+    }
+
+    public static function getFontFilePath($fontName, $format = 'ttf'){
+        $font = Util::getItem(static::$fonts, $fontName, []);
+        $file = Util::getItem($font, $format, null);
+        return $file? static::$fontDirPath . '/' . $file : null;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Chayka\Facebook;
 
+use Chayka\Helpers\FsHelper;
 use Chayka\Helpers\Util;
 use Chayka\WP\Models\UserModel;
 use Chayka\WP\MVC\Controller;
@@ -103,6 +104,9 @@ class FacebookController extends Controller{
 
     }
 
+    /**
+     * Facebook channel action, possibly deprecated
+     */
     public function channelAction(){
         $locale = InputHelper::getParam('locale', 'en_US');
         $cache_expire = 60*60*24*365;
@@ -110,5 +114,29 @@ class FacebookController extends Controller{
         header("Cache-Control: max-age=".$cache_expire);
         header('Expires: ' . gmdate('D, d M Y H:i:s', time()+$cache_expire) . ' GMT');
         die('<script src="//connect.facebook.net/'.$locale.'/all.js"></script>');
+    }
+
+    /**
+     * Facebook thumbnail
+     */
+    public function thumbnailAction(){
+        $imageId = InputHelper::getParam('image_id');
+        $imageFormat = FsHelper::getExtension($imageId);
+        $postId = FsHelper::hideExtension($imageId);
+        FontHelper::init('res/fonts', Plugin::getInstance());
+
+//        $string = 'Hello';
+//        try{
+//            $im     = imagecreatetruecolor(300, 300);
+//            $orange = imagecolorallocate($im, 220, 210, 0);
+//            $px     = (imagesx($im) - 7.5 * strlen($string)) / 2;
+//            imagestring($im, 30, 10, 10, $string, $orange);
+//            imagettftext($im, 30, 0, 50, 50, $orange, FontHelper::getFontFilePath('ruvag'), $string);
+//            header("Content-type: image/png");
+//            imagepng($im);
+//            imagedestroy($im);
+//        }catch (\Exception $e){
+//            JsonHelper::respondException($e);
+//        }
     }
 }

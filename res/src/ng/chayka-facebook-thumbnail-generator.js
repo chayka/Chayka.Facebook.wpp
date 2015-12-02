@@ -9,7 +9,8 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
             scope: {
                 model: '=',
                 blocks: '=?',
-                fonts: '=?'
+                fonts: '=?',
+                postId: '@?'
             },
             controller: ['$scope', function($scope){
                 angular.extend($scope, {

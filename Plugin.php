@@ -95,6 +95,7 @@ class Plugin extends WP\Plugin{
      */
     public function registerRoutes() {
         $this->addRoute('default');
+        $this->addRoute('thumbnail', 'facebook/thumbnail/:image_id', ['controller' => 'facebook', 'action'=>'thumbnail']);
     }
 
     /**

@@ -36,19 +36,23 @@
          */
         $p      = $this->post;
         $blocks = [
+            'site' => get_bloginfo('site_name'),
+            'description' => get_bloginfo('description'),
             'title' => $p->getTitle(),
             'excerpt' => $p->getExcerpt(),
             'categories' => join(', ', $p->getTerms('category')),
             'tags' => join(', ', $p->getTerms('post_tag')),
         ];
 
+        $tb = $p->getThumbnailData_Full();
+
         $def = [
-            'background' => '',
+            'background' => $tb['url'],
             'logo' => '',
             'fade' => [
                 'color' => '#000000',
                 'opacity' => 50
-            ]
+            ],
         ];
 
         foreach($blocks as $block=>$text){
@@ -72,7 +76,7 @@
         <div class="form_field fullsize fb_thumbnail" data-form-field="fb_thumbnail">
             <label class="">Thumbnail (og:image)</label>
             <input name="<?php echo $name;?>" value="{{meta.fb_thumbnail | json}}" type="hidden" data-ng-init="meta.fb_thumbnail=<?php $this->json($value, true); ?>; postData=<?php $this->json($blocks, true); ?>; fonts = <?php $this->json($this->fonts, true); ?>;" data-ng-model="meta.fb_thumbnail" title="Thumbnail (og:image)"/>
-            <div data-facebook-thumbnail-generator data-model="meta.fb_thumbnail" data-blocks="postData" data-fonts="fonts"></div>
+            <div data-facebook-thumbnail-generator data-model="meta.fb_thumbnail" data-blocks="postData" data-fonts="fonts" data-post-id="<?php echo $p->getId();?>"></div>
         </div>
 
 
