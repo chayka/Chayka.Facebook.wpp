@@ -178,14 +178,17 @@ class FacebookController extends Controller{
 //            imagestring($im, 30, 10, 10, $string, $orange);
 //            imagettftext($im, 30, 0, 50, 50, $orange, FontHelper::getFontFilePath('Montserrat'), $string);
             $this->renderTextBlock($im, $string, [
-                'font-family' => 'Montserrat_B',
+                'font-family' => 'ProximaNova_B',
                 'font-size' => 40,
                 'x' => 400,
                 'y' => 150,
-                'width' => 413,
-                'text-align' => 'center',
+                'width' => 700,
+//                'text-align' => 'right',
+                'border-width' => 4,
+                'border-color' => '#fff',
+                'padding' => 40,
 //                'color' => '#0f0',
-//                'background-color' => '#00f',
+                'background-color' => '#000000',
             ]);
             switch($imageFormat){
                 case 'jpg':
@@ -239,76 +242,75 @@ class FacebookController extends Controller{
     }
     
     protected function hashColorToRGB($hashColor){
-//        $r = 0;
-//        $g = 0;
-//        $b = 0;
-//        sscanf(strtolower($hashColor), '#%02x%02x%02x', $r, $g, $b);
-//        return [$r, $g, $b];
         if(preg_match('/^#([\d\w])([\d\w])([\d\w])$/', $hashColor, $m)){
             $hashColor = '#' . $m[1] . $m[1] . $m[2] . $m[2] . $m[3] . $m[3];
         }
         return sscanf(strtolower($hashColor), '#%02x%02x%02x');
     }
 
-    protected function allocateHashColor($image, $hashColor){
+    protected function allocateHashColor($image, $hashColor, $opacity = 100){
         list($r, $g, $b) = $this->hashColorToRGB($hashColor);
-//        Util::print_r($this->hashColorToRGB($hashColor));die();
-        return imagecolorallocate($image, $r, $g, $b);
+//        Util::print_r($this->hashColorToRGB($hashColor));
+        return imagecolorallocatealpha($image, $r, $g, $b, 127 - $opacity * 1.27);
     }
 
-    protected function stringWidth($text, $font, $fontSize){
+    protected function stringDimensions($text, $font, $fontSize){
         list($blx, $bly, $brx, $bry, $trx, $try, $tlx, $tly) = imagettfbbox($fontSize, 0, FontHelper::getFontFilePath($font), $text);
-        return $trx - $tlx;
+        return [
+            'text' => $text,
+            'width' => $trx - $tlx,
+            'height' => $try - $bry,
+            'tlx' => $tlx,
+            'tly' => $tly,
+            'trx' => $trx,
+            'try' => $try,
+            'blx' => $blx,
+            'bly' => $bly,
+            'brx' => $brx,
+            'bry' => $bry,
+        ];
     }
 
     protected function splitStringToFitWidth($text, $fontFamily, $fontSize, $width){
         $words = preg_split('/\s+/imUs', $text);
         $currentLine = '';
-        $currentWidth = 0;
+        $currentData = $zeroData = $this->stringDimensions($currentLine, $fontFamily, $fontSize);
         $lines = [];
         foreach($words as $word){
-            $tryLine = trim($currentLine . ' ' .$word);
-            $tryWidth = $this->stringWidth($tryLine, $fontFamily, $fontSize);
-            if($tryWidth > $width){
+            $tryLine = trim($currentLine . ' ' . $word);
+            $tryData = $this->stringDimensions($tryLine, $fontFamily, $fontSize);
+            if($tryData['width'] > $width){
                 /**
                  * $tryLine does not fit $width
                  */
-                $wordWidth = $this->stringWidth($word, $fontFamily, $fontSize);
+                $wordData = $this->stringDimensions($word, $fontFamily, $fontSize);
                 if($currentLine){
                     /**
                      * $word is not the only $word in this line,
                      * pushing word to the next line
                      */
-                    $lines[] = [
-                        'text' => $currentLine,
-                        'width' => $currentWidth,
-                    ];
+                    $lines[] = $currentData;
                     $currentLine = $word;
-                    $currentWidth = $wordWidth;
+                    $currentData = $wordData;
                 }else{
                     /**
                      * $word is the only $word in this line,
                      * force push to current line
                      */
-                    $lines[] = [
-                        'text' => $word,
-                        'width' => $wordWidth,
-                    ];
+                    $lines[] = $wordData;
                     $currentLine = '';
+                    $currentData = $zeroData;
                 }
             }else{
                 /**
                  * $tryLine does fit $width
                  */
                 $currentLine = $tryLine;
-                $currentWidth = $tryWidth;
+                $currentData = $tryData;
             }
         }
         if($currentLine){
-            $lines[] = [
-                'text' => $currentLine,
-                'width' => $currentWidth,
-            ];
+            $lines[] = $currentData;
         }
 
         return $lines;
@@ -323,37 +325,89 @@ class FacebookController extends Controller{
         $textAlign = Util::getItem($params, 'text-align', 'left');
 //        $color = imagecolorallocate($image, 255, 255, 255);
         $color = $this->allocateHashColor($image, Util::getItem($params, 'color', '#fff'));
+
         $hashBgColor = Util::getItem($params, 'background-color');
         $bgColor = $hashBgColor ? $this->allocateHashColor($image, $hashBgColor):null;
+
+        $padding = Util::getItem($params, 'padding', 0);
+        $paddingTop = Util::getItem($params, 'padding-top', $padding);
+        $paddingRight = Util::getItem($params, 'padding-right', $padding);
+        $paddingBottom = Util::getItem($params, 'padding-bottom', $padding);
+        $paddingLeft = Util::getItem($params, 'padding-left', $padding);
+
+        $borderWidth = Util::getItem($params, 'border-width', 0);
+        $borderWidthTop = Util::getItem($params, 'border-width-top', $borderWidth);
+        $borderWidthRight = Util::getItem($params, 'border-width-right', $borderWidth);
+        $borderWidthBottom = Util::getItem($params, 'border-width-bottom', $borderWidth);
+        $borderWidthLeft = Util::getItem($params, 'border-width-left', $borderWidth);
+
+        $hashBorderColor = Util::getItem($params, 'border-color');
+        $borderColor = $hashBorderColor ? $this->allocateHashColor($image, $hashBorderColor):null;
+
         $hlColor = imagecolorallocate($image, 200, 200, 200);
         $dotColor = imagecolorallocate($image, 255, 0, 0);
         $blColor = imagecolorallocate($image, 0, 0, 255);
 
-        $lines = $this->splitStringToFitWidth($text, $fontFamily, $fontSize, $width);
+        $clientWidth = $width - $borderWidthLeft - $paddingLeft - $paddingRight - $borderWidthRight;
+
+        $lines = $this->splitStringToFitWidth($text, $fontFamily, $fontSize, $clientWidth);
 
         $lineHeight = $fontSize * 1.5;
         $baseline = 0.25;
 
+        $clientHeight = $lineHeight * count($lines);
+
+        $height = $clientHeight + $borderWidthTop + $paddingTop + $paddingBottom + $borderWidthBottom;
+
         if($bgColor){
-            imagefilledrectangle($image, $x, $y, $x + $width, $y + $lineHeight * count($lines), $bgColor);
+            imagefilledrectangle($image, $x, $y, $x + $width, $y + $height, $bgColor);
+        }
+        if($borderColor){
+            /**
+             * Left border
+             */
+            for($i = 0; $i < $borderWidthLeft; $i++){
+                imageline($image, $x + $i, $y, $x + $i, $y + $height, $borderColor);
+            }
+
+            /**
+             * Top border
+             */
+            for($i = 0; $i < $borderWidthTop; $i++){
+                imageline($image, $x, $y + $i, $x + $width, $y + $i, $borderColor);
+            }
+
+            /**
+             * Right border
+             */
+            for($i = 0; $i < $borderWidthRight; $i++){
+                imageline($image, $x + $width - $i, $y, $x + $width - $i, $y + $height, $borderColor);
+            }
+
+            /**
+             * Bottom border
+             */
+            for($i = 0; $i < $borderWidthTop; $i++){
+                imageline($image, $x, $y + $height - $i, $x + $width, $y + $height - $i, $borderColor);
+            }
         }
         foreach($lines as $line){
-            list($blx, $bly, $brx, $bry, $trx, $try, $tlx, $tly) = imagettfbbox($fontSize, 0, FontHelper::getFontFilePath($fontFamily), $line['text']);
-//            imagefilledrectangle($image, $x + $blx, $y, $x + $trx, $y + $lineHeight, $hlColor);
-//            imagefilledrectangle($image, $x + $blx, $y + $bly, $x + $trx, $y + $try, $bgColor);
             $offset = 0;
             switch($textAlign){
                 case 'left':
                     $offset = 0;
                     break;
                 case 'right':
-                    $offset = $width - $line['width'];
+                    $offset = $clientWidth - $line['width'];
                     break;
                 case 'center':
-                    $offset = intval(($width - $line['width'] ) / 2);
+                    $offset = intval(($clientWidth - $line['width'] ) / 2);
                     break;
             }
-            imagettftext($image, $fontSize, 0, $x - $blx + $offset, $y + (1 - $baseline) * $lineHeight, $color, FontHelper::getFontFilePath($fontFamily), $line['text']);
+            imagettftext($image, $fontSize, 0,
+                $x - $line['blx'] + $offset + $borderWidthLeft + $paddingLeft,
+                $y + (1 - $baseline) * $lineHeight + $borderWidthTop + $paddingTop,
+                $color, FontHelper::getFontFilePath($fontFamily), $line['text']);
 //            imagefilledellipse($image, $x, $y, 3, 3, $dotColor);
 //            imagefilledellipse($image, $x, $y + (1 - $baseline) * $lineHeight, 3, 3, $blColor);
             $y += $lineHeight;
