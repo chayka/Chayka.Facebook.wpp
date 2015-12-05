@@ -19,9 +19,9 @@
         .preview_logo{
             z-index: 2;
             position: absolute;
-            top: 5%;
-            left: 5%;
-            width: 10%;
+            ////top: 5%;
+            ////left: 5%;
+            //width: 10%;
             height: auto;
         }
     }
@@ -63,6 +63,105 @@
                         width: 150px;
                     }
                 }
+            }
+        }
+    }
+}
+
+.facebook-anchor_picker{
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-image: url('../img/anchors64.png');
+    background-size: 300% 300%;
+    vertical-align: top;
+
+    &.left-top{
+        background-position: left top;
+    }
+
+    &.center-top{
+        background-position: center top;
+    }
+
+    &.right-top{
+        background-position: right top;
+    }
+
+    &.left-center{
+        background-position: left center;
+    }
+
+    &.center-center{
+        background-position: center center;
+    }
+
+    &.right-center{
+        background-position: right center;
+    }
+
+    &.left-bottom{
+        background-position: left bottom;
+    }
+
+    &.center-bottom{
+        background-position: center bottom;
+    }
+
+    &.right-bottom{
+        background-position: right bottom;
+    }
+}
+
+.facebook-thumbnail_block_control{
+    & > .block_field{
+        width: 300px;
+        & > label{
+            display: inline-block;
+            width: 40%;
+            vertical-align: top;
+        }
+        & > input{
+            display: inline-block;
+            width: auto;
+            vertical-align: top;
+            height: 30px;
+        }
+        & > select{
+            display: inline-block;
+            width: auto;
+            vertical-align: top;
+            height: 30px;
+        }
+
+        &.size{
+            & > input{
+                width: 125px;
+                text-align: right;
+            }
+            & > select{
+                width: 44px;
+            }
+        }
+
+        &.coord_x{
+
+        }
+
+        &.coord_y{
+
+        }
+
+        &.width{
+
+        }
+
+        &.anchor{
+            & > select{
+                width: 125px;
+            }
+            & > .facebook-anchor_picker{
+                width: 44px;
             }
         }
     }

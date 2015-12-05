@@ -47,8 +47,18 @@
         $tb = $p->getThumbnailData_Full();
 
         $def = [
-            'background' => $tb['url'],
-            'logo' => '',
+            'background' => [
+                'url' => $tb['url'],
+            ],
+            'logo' => [
+                'url' => '',
+                'x' => 0,
+                'unitX' => 'px',
+                'y' => 0,
+                'unitY' => 'px',
+                'width' => 100,
+                'unitWidth' => 'px'
+            ],
             'fade' => [
                 'color' => '#000000',
                 'opacity' => 50
@@ -59,7 +69,13 @@
             $def[$block] = [
                 'active' => 'title' === $block,
                 'color' => '#FFFFFF',
-                'size' => 20
+                'size' => 20,
+                'x' => 0,
+                'unitX' => 'px',
+                'y' => 0,
+                'unitY' => 'px',
+                'width' => 50,
+                'unitWidth' => '%'
             ];
         }
 

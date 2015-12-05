@@ -1,7 +1,7 @@
 <div class="chayka-facebook-thumbnail_generator">
-    <div class="thumbnail_preview" data-ng-style="{'background-image': model.background?'url(' + model.background + ')':'none'}">
+    <div class="thumbnail_preview" data-ng-style="{'background-image': model.background.url?'url(' + model.background.url + ')':'none'}">
         <div class="preview_fade" data-ng-style="{'background-color': model.fade.color, 'opacity': (model.fade.opacity / 100)}"></div>
-        <img class="preview_logo" data-ng-show="!!model.logo" data-ng-src="{{model.logo}}">
+        <img class="preview_logo" data-ng-show="!!model.logo.url" data-ng-src="{{model.logo.url}}" data-ng-style="getLogoStyle()">
         <div class="preview_block {{block}}" data-ng-repeat="(block, text) in blocks" data-ng-style="getBlockStyle(block)" data-ng-show="!!model[block] && !!model[block].active">
             {{text}}
         </div>
@@ -16,15 +16,16 @@
         <div class="forms">
             <div class="form background" data-ng-show="'background'===tab">
                 <h1>{{"Background" | nls}}</h1>
-                <div class="background_picker" data-media-picker data-mode="url" data-size="full" data-model="model.background" data-picker-button-text="Pick Background Image" data-title="Background Image" >
+                <div class="background_picker" data-media-picker data-mode="url" data-size="full" data-model="model.background.url" data-picker-button-text="Pick Background Image" data-title="Background Image" >
                     Recommended: 1200 x 630px, min: 600 x 315px
                 </div>
             </div>
             <div class="form logo" data-ng-show="'logo'===tab">
                 <h1>{{"Logo" | nls}}</h1>
-                <div class="logo_picker" data-media-picker data-mode="url" data-size="full" data-model="model.logo" data-picker-button-text="Pick Logo Image" data-title="Logo Image" >
+                <div class="logo_picker" data-media-picker data-mode="url" data-size="full" data-model="model.logo.url" data-picker-button-text="Pick Logo Image" data-title="Logo Image" >
                     Recommended: 24bit png with opacity support
                 </div>
+                <div data-facebook-thumbnail-block-control="blockControls.logo" data-value="model.logo" data-block="preview_logo"></div>
             </div>
             <div class="form fade" data-ng-show="'fade'===tab">
                 <h1>{{"Fade" | nls}}</h1>
