@@ -1,27 +1,58 @@
+.chayka-facebook-thumbnail_generator {
+  overflow-y: auto;
+}
+.chayka-facebook-thumbnail_generator:after {
+  content: '';
+  clear: both;
+  display: block;
+}
 .chayka-facebook-thumbnail_generator > .thumbnail_preview {
+  float: left;
+  width: 600px;
+}
+.chayka-facebook-thumbnail_generator > .thumbnail_preview > .tabs > .tab {
+  display: inline-block;
+  cursor: pointer;
+  margin-right: 1em;
+}
+.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas {
   width: 600px;
   height: 315px;
   background-color: black;
   background-size: cover;
   position: relative;
+  overflow: hidden;
 }
-.chayka-facebook-thumbnail_generator > .thumbnail_preview .preview_fade {
+.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas .preview_background {
+  width: 600px;
+  height: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas .preview_fade {
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
-  z-index: 1;
-}
-.chayka-facebook-thumbnail_generator > .thumbnail_preview .preview_logo {
   z-index: 2;
+}
+.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas .preview_logo {
+  z-index: 3;
   position: absolute;
   height: auto;
 }
-.chayka-facebook-thumbnail_generator > .thumbnail_editor > .tabs > .tab {
-  display: inline-block;
-  cursor: pointer;
-  margin-right: 1em;
+.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas .preview_block {
+  z-index: 4;
+  position: absolute;
+  height: auto;
+  line-height: normal;
+}
+.chayka-facebook-thumbnail_generator > .thumbnail_editor {
+  width: 300px;
+  float: left;
 }
 .chayka-facebook-thumbnail_generator > .thumbnail_editor > .forms > .form.background > .background_picker {
   width: 300px;

@@ -1,32 +1,14 @@
 .chayka-facebook-thumbnail_generator{
+    overflow-y: auto;
 
-    & > .thumbnail_preview{
-        width: 600px;
-        height: 315px;
-        background-color: black;
-        background-size: cover;
-        position: relative;
-
-        .preview_fade{
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            z-index: 1;
-        }
-
-        .preview_logo{
-            z-index: 2;
-            position: absolute;
-            ////top: 5%;
-            ////left: 5%;
-            //width: 10%;
-            height: auto;
-        }
+    &:after{
+        content: '';
+        clear: both;
+        display: block;
     }
-
-    & > .thumbnail_editor{
+    & > .thumbnail_preview{
+        float: left;
+        width: 600px;
         & > .tabs{
             & > .tab{
                 display: inline-block;
@@ -40,6 +22,51 @@
                 }
             }
         }
+        & > .thumbnail_canvas{
+            width: 600px;
+            height: 315px;
+            background-color: black;
+            background-size: cover;
+            position: relative;
+            overflow: hidden;
+
+            .preview_background{
+                width: 600px;
+                height: auto;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
+            }
+
+            .preview_fade{
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 2;
+            }
+
+            .preview_logo{
+                z-index: 3;
+                position: absolute;
+                height: auto;
+            }
+            .preview_block{
+                z-index: 4;
+                position: absolute;
+                height: auto;
+
+                line-height: normal;
+            }
+        }
+
+    }
+
+    & > .thumbnail_editor{
+        width: 300px;
+        float: left;
         & > .forms{
             & > .form{
                 &.background{
