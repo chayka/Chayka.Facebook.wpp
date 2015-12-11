@@ -184,8 +184,10 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
             replace: true,
             template:
                 '<div class="facebook-thumbnail_block_control">' +
-                '   <div class="block_title">{{title}}</div>' +
-                '   <label class="checkbox is_active" data-ng-show="!!optional"><input type="checkbox" data-ng-model="model.active" title="Show block"/> enable</label>' +
+                '   <div class="block_header">' +
+                '       <div class="block_title">{{title}}</div>' +
+                '       <label class="checkbox is_active" data-ng-show="!!optional"><input type="checkbox" data-ng-model="model.active" title="Show block"/> enable</label>' +
+                '   </div>' +
                 '   <div class="tabs" data-ng-show="tabs.length > 1">' +
                 '       <div class="tab image" data-ng-show="isTabShown(\'image\')" data-ng-class="{active: \'image\' === tab}" data-ng-click="tab=\'image\'">Image</div>' +
                 '       <div class="tab text" data-ng-show="isTabShown(\'text\')" data-ng-class="{active: \'text\' === tab}" data-ng-click="tab=\'text\'">Text</div>' +
@@ -193,7 +195,7 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                 '       <div class="tab box" data-ng-show="isTabShown(\'box\')" data-ng-class="{active: \'box\' === tab}" data-ng-click="tab=\'box\'">Box</div>' +
                 '   </div>' +
                 '   <div class="form image" data-ng-show="\'image\' === tab">' +
-                '       <div class="image_picker" data-media-picker data-mode="url" data-size="full" data-model="model.url" data-picker-button-text="Pick Image" data-title="Pick Image" >' +
+                '       <div class="image_picker" data-media-picker data-mode="url" data-size="full" data-model="model.url" data-picker-button-text="Pick Image" data-title="Pick Image">' +
                 '           {{imageHint}}' +
                 '       </div>' +
                 '   </div>' +
@@ -203,44 +205,75 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                 '           <select data-ng-model="model.anchor" data-ng-options="anchor as text for (anchor, text) in anchors" data-ng-change="convertBlockStyle()"></select>' +
                 '           <div data-facebook-anchor-picker data-value="model.anchor" data-on-change="convertBlockStyle()"></div>' +
                 '       </div>' +
-                '       <div class="block_field size coord_x">' +
+                '       <div class="block_field size_field coord_x">' +
                 '           <label>{{"Coord X" | nls}}:</label>' +
                 '           <input type="number" data-ng-model="model.x" min="0">' +
                 '           <select data-ng-model="model.unitX" data-ng-options="unit for unit in units" data-ng-change="convertBlockStyle()"></select>' +
                 '       </div>' +
-                '       <div class="block_field size coord_y">' +
+                '       <div class="block_field size_field coord_y">' +
                 '           <label>{{"Coord Y" | nls}}:</label>' +
                 '           <input type="number" data-ng-model="model.y" min="0">' +
                 '           <select data-ng-model="model.unitY" data-ng-options="unit for unit in units" data-ng-change="convertBlockStyle()"></select>' +
                 '       </div>' +
-                '       <div class="block_field size width">' +
+                '       <div class="block_field size_field width">' +
                 '           <label>{{"Width" | nls}}:</label>' +
                 '           <input type="number" data-ng-model="model.width" min="0">' +
                 '           <select data-ng-model="model.unitWidth" data-ng-options="unit for unit in units" data-ng-change="convertBlockStyle()"></select>' +
                 '       </div>' +
                 '   </div>' +
                 '   <div class="form text" data-ng-show="\'text\' === tab">' +
-                '       <div class="block_field block_font_color color_picker" data-form-field="fontColor">' +
-                '           <label class="width50">Font color</label>' +
+                '       <div class="block_field color_field block_font_color color_picker">' +
+                '           <label>Color</label>' +
                 '           <input type="color" data-ng-model="model.color" data-default-color="#FFFFFF" data-color-picker title="Font color"/>' +
                 '       </div>' +
-                '       <div class="block_field font_size" data-form-field="fontSize">' +
-                '           <label class="width50">Font size</label>' +
+                '       <div class="block_field font_field font_size">' +
+                '           <label>Font</label>' +
+                '           <select data-ng-model="model.fontFamily" title="Font size" data-ng-options="font for font in fonts" data-ng-show="!!fonts.length"></select>' +
                 '           <input type="number" data-ng-model="model.fontSize" title="Font size" min="0"/>' +
                 '       </div>' +
-                '       <div class="block_field font_family" data-form-field="fontFamily" data-ng-show="!!fonts.length">' +
-                '           <label class="width50">Font family</label>' +
-                '           <select data-ng-model="model.fontFamily" title="Font size" data-ng-options="font for font in fonts"></select>' +
+                '       <div class="block_field text_align">' +
+                '           <label>Text align</label>' +
+                '           <span class="button dashicons-before dashicons-editor-alignleft" data-ng-class="{active: \'left\'===model.textAlign}" data-ng-click="model.textAlign = \'left\'"></span>' +
+                '           <span class="button dashicons-before dashicons-editor-aligncenter" data-ng-class="{active: \'center\'===model.textAlign}" data-ng-click="model.textAlign = \'center\'"></span>' +
+                '           <span class="button dashicons-before dashicons-editor-alignright" data-ng-class="{active: \'right\'===model.textAlign}" data-ng-click="model.textAlign = \'right\'"></span>' +
                 '       </div>' +
                 '   </div>' +
                 '   <div class="form box" data-ng-show="\'box\' === tab">' +
-                '       <div class="block_field background_color color_picker">' +
-                '           <label class="width50">Fade color</label>' +
+                '       <div class="block_field color_field background_color color_picker">' +
+                '           <label>Background color</label>' +
                 '           <input type="color" data-ng-model="model.backgroundColor" data-default-color="#000000" data-color-picker title="Background color"/>' +
                 '       </div>' +
                 '       <div class="block_field background_opacity">' +
-                '           <label class="width50">Fade opacity</label>' +
+                '           <label>Background opacity</label>' +
                 '           <input type="number" data-ng-model="model.backgroundOpacity" title="Background opacity" min="0" max="100"/>' +
+                '       </div>' +
+                '       <div class="block_field color_field border_color color_picker">' +
+                '           <label>Border color</label>' +
+                '           <input type="color" data-ng-model="model.borderColor" data-default-color="#ffffff" data-color-picker title="Border color"/>' +
+                '       </div>' +
+                '       <div class="block_field border_width" data-ng-show="model.borderWidth >= 0">' +
+                '           <label>Border width</label>' +
+                '           <input type="number" data-ng-model="model.borderWidth" title="Border width" min="0"/>' +
+                '       </div>' +
+                '       <div class="block_field border_width" data-ng-show="model.borderWidth < 0">' +
+                '           <label>Border width top</label>' +
+                '           <input type="number" data-ng-model="model.borderWidthTop" title="Border width top" min="0"/>' +
+                '       </div>' +
+                '       <div class="block_field border_width" data-ng-show="model.borderWidth < 0">' +
+                '           <label>Border width right</label>' +
+                '           <input type="number" data-ng-model="model.borderWidthRight" title="Border width right" min="0"/>' +
+                '       </div>' +
+                '       <div class="block_field border_width" data-ng-show="model.borderWidth < 0">' +
+                '           <label>Border width bottom</label>' +
+                '           <input type="number" data-ng-model="model.borderWidthBottom" title="Border width bottom" min="0"/>' +
+                '       </div>' +
+                '       <div class="block_field border_width" data-ng-show="model.borderWidth < 0">' +
+                '           <label>Border width left</label>' +
+                '           <input type="number" data-ng-model="model.borderWidthLeft" title="Border width left" min="0"/>' +
+                '       </div>' +
+                '       <div class="block_field padding">' +
+                '           <label>Padding</label>' +
+                '           <input type="number" data-ng-model="model.padding" title="padding" min="0"/>' +
                 '       </div>' +
                 '   </div>' +
                 '</div>',
@@ -290,13 +323,25 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                             utils.setDefaults($scope.model, {
                                 fontFamily: '',
                                 fontSize: 20,
-                                color: '#ffffff'
+                                color: '#ffffff',
+                                textAlign: 'left'
                             });
                         }
                         if($scope.isTabShown('box')) {
                             utils.setDefaults($scope.model, {
                                 backgroundColor: '#000000',
-                                backgroundOpacity: 0
+                                backgroundOpacity: 0,
+                                borderColor: '#ffffff',
+                                borderWidth: 0,
+                                borderWidthTop: 0,
+                                borderWidthRight: 0,
+                                borderWidthBottom: 0,
+                                borderWidthLeft: 0,
+                                padding: 0,
+                                paddingTop: 0,
+                                paddingRight: 0,
+                                paddingBottom: 0,
+                                paddingLeft: 0,
                             });
                         }
                     },
@@ -325,8 +370,8 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                             unitX = utils.getItem(m, 'unitX', 'px'),
                             top = pos.top,
                             unitY = utils.getItem(m, 'unitY', 'px'),
-                            width = $block.width(),
-                            height = $block.height(),
+                            width = $block.outerWidth(),
+                            height = $block.outerHeight(),
                             unitW = utils.getItem(m, 'unitWidth', '%'),
                             anchor = utils.getItem(m, 'anchor', 'left-top'),
                             canvasWidth = $block.parent().width(),
@@ -386,7 +431,8 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                             angular.extend(style, {
                                 'font-family': m.fontFamily || 'inherit',
                                 'font-size': m.fontSize ? m.fontSize + 'px' : '1em',
-                                'color': m.color || '#FFFFFF'
+                                'color': m.color || '#FFFFFF',
+                                'text-align': m.textAlign
                             });
                         }
 
@@ -398,8 +444,8 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                                 w = utils.getItem(m, 'width', 50),
                                 unitW = utils.getItem(m, 'unitWidth', '%'),
                                 anchor = utils.getItem(m, 'anchor', 'left-top'),
-                                blockWidth = $block.width(),
-                                blockHeight = $block.height(),
+                                blockWidth = $block.outerWidth(),
+                                blockHeight = $block.outerHeight(),
                                 blockRatio = blockWidth / blockHeight,
                                 canvasWidth = $block.parent().width(),
                                 canvasHeight = $block.parent().height(),
@@ -450,8 +496,27 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                         }
 
                         if($scope.isTabShown('box')) {
+                            var borderWidth = m.borderWidth && m.borderWidth + 'px' || '0', borderWidths = [];
+                            if(m.borderWidth < 0){
+                                borderWidths.push((m.borderWidthTop && m.borderWidthTop + 'px' || 0) + '');
+                                borderWidths.push((m.borderWidthRight && m.borderWidthRight + 'px' || 0) + '');
+                                borderWidths.push((m.borderWidthBottom && m.borderWidthBottom + 'px' || 0) + '');
+                                borderWidths.push((m.borderWidthLeft && m.borderWidthLeft + 'px' || 0) + '');
+                                borderWidth = borderWidths.join(' ');
+                            }
+                            var padding = m.padding && m.padding + 'px' || '0', paddings = [];
+                            if(m.borderWidth < 0){
+                                paddings.push((m.paddingTop && m.paddingTop + 'px' || 0) + '');
+                                paddings.push((m.paddingRight && m.paddingRight + 'px' || 0) + '');
+                                paddings.push((m.paddingBottom && m.paddingBottom + 'px' || 0) + '');
+                                paddings.push((m.paddingLeft && m.paddingLeft + 'px' || 0) + '');
+                                padding = paddings.join(' ');
+                            }
                             angular.extend(style, {
-                                'background-color': $scope.hashColorAndOpacityToRGB(m.backgroundColor || '#000', m.backgroundOpacity || 0)
+                                'background-color': $scope.hashColorAndOpacityToRGB(m.backgroundColor || '#000', m.backgroundOpacity || 0),
+                                'border': 'solid ' + m.borderColor,
+                                'border-width': borderWidth,
+                                'padding': padding
                             });
                         }
 
