@@ -38,34 +38,14 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                                 anchor: 'left-top'
                             },
                             fade: {
-                                color: '#000000',
-                                opacity: 50
+                                backgroundColor: '#000000',
+                                backgroundOpacity: 50
                             }
                         });
 
                         for(var block in $scope.blocks){
                             if($scope.blocks.hasOwnProperty(block)){
                                 $scope.model[block] = $scope.model[block] || {};
-                                //utils.setDefaults($scope.model[], {
-                                //    background: {
-                                //        url: ''
-                                //    },
-                                //    logo: {
-                                //        url: '',
-                                //        x: 0,
-                                //        unitX: 'px',
-                                //        y: 0,
-                                //        unitY: 'px',
-                                //        width: 100,
-                                //        unitWidth: 'px',
-                                //        anchor: 'left-top'
-                                //    },
-                                //    fade: {
-                                //        color: '#000000',
-                                //        opacity: 50
-                                //    }
-                                //});
-
                             }
                         }
                     },
@@ -75,37 +55,28 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                     },
 
                     getBlockStyle: function(block){
-                        //var model = $scope.model;
-                        //var style = model && model[block]?
-                        //    {
-                        //        'visibility': !!model[block].active?'visible':'hidden',
-                        //        'font-family': model[block].font?model[block].font:'inherit',
-                        //        'font-size': model[block].size?model[block].size + 'px':'1em',
-                        //        'color': model[block].color?model[block].color:'#FFFFFF'
-                        //    }:{
-                        //        'visibility': 'hidden'
-                        //    };
-                        //
-                        //if($scope.blockControls[block]){
-                        //    angular.extend(style, $scope.blockControls[block].getBlockStyle());
-                        //}
-                        //
-                        //return style;
-
-                        return $scope.blockControls[block].getBlockStyle();
+                        var style = $scope.blockControls[block] && $scope.blockControls[block].getBlockStyle() || {};
+                        if('background' === block){
+                            style['background-image'] = $scope.model.background.url && 'url(' + $scope.model.background.url + ')';
+                        }
+                        return style;
                     },
 
-                    getLogoStyle: function(){
-                        var style = {
+                    getCanvasStyle: function(){
+                        return {
+                            height: $scope.model.background && $scope.model.background.url?
+                                $element.find('.thumbnail_preview .preview_background').height() + 'px':
+                                '315px'
                         };
+                    },
 
-                        if($scope.blockControls.logo){
-                            angular.extend(style, $scope.blockControls.logo.getBlockStyle());
-                        }
+                    activateTab: function(tab){
+                        $scope.tab = tab;
+                    },
 
-                        return style;
+                    isTabActive: function(tab){
+                        return tab === $scope.tab;
                     }
-
 
                 });
 
@@ -165,14 +136,6 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                         if($scope.onChange && valueChanged){
                             $scope.onChange();
                         }
-                        //console.dir({
-                        //    'facebookAnchorPicker.pickAnchor':$event,
-                        //    'el': $element,
-                        //    'x': clickedThirdX,
-                        //    'y': clickedThirdY,
-                        //    'value': $scope.value
-                        //});
-
                     }
                 });
             }]
@@ -182,101 +145,7 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
         return {
             restrict: 'A',
             replace: true,
-            template:
-                '<div class="facebook-thumbnail_block_control">' +
-                '   <div class="block_header">' +
-                '       <div class="block_title">{{title}}</div>' +
-                '       <label class="checkbox is_active" data-ng-show="!!optional"><input type="checkbox" data-ng-model="model.active" title="Show block"/> enable</label>' +
-                '   </div>' +
-                '   <div class="tabs" data-ng-show="tabs.length > 1">' +
-                '       <div class="tab image" data-ng-show="isTabShown(\'image\')" data-ng-class="{active: \'image\' === tab}" data-ng-click="tab=\'image\'">Image</div>' +
-                '       <div class="tab text" data-ng-show="isTabShown(\'text\')" data-ng-class="{active: \'text\' === tab}" data-ng-click="tab=\'text\'">Text</div>' +
-                '       <div class="tab position" data-ng-show="isTabShown(\'position\')" data-ng-class="{active: \'position\' === tab}" data-ng-click="tab=\'position\'">Position</div>' +
-                '       <div class="tab box" data-ng-show="isTabShown(\'box\')" data-ng-class="{active: \'box\' === tab}" data-ng-click="tab=\'box\'">Box</div>' +
-                '   </div>' +
-                '   <div class="form image" data-ng-show="\'image\' === tab">' +
-                '       <div class="image_picker" data-media-picker data-mode="url" data-size="full" data-model="model.url" data-picker-button-text="Pick Image" data-title="Pick Image">' +
-                '           {{imageHint}}' +
-                '       </div>' +
-                '   </div>' +
-                '   <div class="form position" data-ng-show="\'position\' === tab">' +
-                '       <div class="block_field anchor">' +
-                '           <label>{{"Anchor" | nls}}:</label>' +
-                '           <select data-ng-model="model.anchor" data-ng-options="anchor as text for (anchor, text) in anchors" data-ng-change="convertBlockStyle()"></select>' +
-                '           <div data-facebook-anchor-picker data-value="model.anchor" data-on-change="convertBlockStyle()"></div>' +
-                '       </div>' +
-                '       <div class="block_field size_field coord_x">' +
-                '           <label>{{"Coord X" | nls}}:</label>' +
-                '           <input type="number" data-ng-model="model.x" min="0">' +
-                '           <select data-ng-model="model.unitX" data-ng-options="unit for unit in units" data-ng-change="convertBlockStyle()"></select>' +
-                '       </div>' +
-                '       <div class="block_field size_field coord_y">' +
-                '           <label>{{"Coord Y" | nls}}:</label>' +
-                '           <input type="number" data-ng-model="model.y" min="0">' +
-                '           <select data-ng-model="model.unitY" data-ng-options="unit for unit in units" data-ng-change="convertBlockStyle()"></select>' +
-                '       </div>' +
-                '       <div class="block_field size_field width">' +
-                '           <label>{{"Width" | nls}}:</label>' +
-                '           <input type="number" data-ng-model="model.width" min="0">' +
-                '           <select data-ng-model="model.unitWidth" data-ng-options="unit for unit in units" data-ng-change="convertBlockStyle()"></select>' +
-                '       </div>' +
-                '   </div>' +
-                '   <div class="form text" data-ng-show="\'text\' === tab">' +
-                '       <div class="block_field color_field block_font_color color_picker">' +
-                '           <label>Color</label>' +
-                '           <input type="color" data-ng-model="model.color" data-default-color="#FFFFFF" data-color-picker title="Font color"/>' +
-                '       </div>' +
-                '       <div class="block_field font_field font_size">' +
-                '           <label>Font</label>' +
-                '           <select data-ng-model="model.fontFamily" title="Font size" data-ng-options="font for font in fonts" data-ng-show="!!fonts.length"></select>' +
-                '           <input type="number" data-ng-model="model.fontSize" title="Font size" min="0"/>' +
-                '       </div>' +
-                '       <div class="block_field text_align">' +
-                '           <label>Text align</label>' +
-                '           <span class="button dashicons-before dashicons-editor-alignleft" data-ng-class="{active: \'left\'===model.textAlign}" data-ng-click="model.textAlign = \'left\'"></span>' +
-                '           <span class="button dashicons-before dashicons-editor-aligncenter" data-ng-class="{active: \'center\'===model.textAlign}" data-ng-click="model.textAlign = \'center\'"></span>' +
-                '           <span class="button dashicons-before dashicons-editor-alignright" data-ng-class="{active: \'right\'===model.textAlign}" data-ng-click="model.textAlign = \'right\'"></span>' +
-                '       </div>' +
-                '   </div>' +
-                '   <div class="form box" data-ng-show="\'box\' === tab">' +
-                '       <div class="block_field color_field background_color color_picker">' +
-                '           <label>Background color</label>' +
-                '           <input type="color" data-ng-model="model.backgroundColor" data-default-color="#000000" data-color-picker title="Background color"/>' +
-                '       </div>' +
-                '       <div class="block_field background_opacity">' +
-                '           <label>Background opacity</label>' +
-                '           <input type="number" data-ng-model="model.backgroundOpacity" title="Background opacity" min="0" max="100"/>' +
-                '       </div>' +
-                '       <div class="block_field color_field border_color color_picker">' +
-                '           <label>Border color</label>' +
-                '           <input type="color" data-ng-model="model.borderColor" data-default-color="#ffffff" data-color-picker title="Border color"/>' +
-                '       </div>' +
-                '       <div class="block_field border_width" data-ng-show="model.borderWidth >= 0">' +
-                '           <label>Border width</label>' +
-                '           <input type="number" data-ng-model="model.borderWidth" title="Border width" min="0"/>' +
-                '       </div>' +
-                '       <div class="block_field border_width" data-ng-show="model.borderWidth < 0">' +
-                '           <label>Border width top</label>' +
-                '           <input type="number" data-ng-model="model.borderWidthTop" title="Border width top" min="0"/>' +
-                '       </div>' +
-                '       <div class="block_field border_width" data-ng-show="model.borderWidth < 0">' +
-                '           <label>Border width right</label>' +
-                '           <input type="number" data-ng-model="model.borderWidthRight" title="Border width right" min="0"/>' +
-                '       </div>' +
-                '       <div class="block_field border_width" data-ng-show="model.borderWidth < 0">' +
-                '           <label>Border width bottom</label>' +
-                '           <input type="number" data-ng-model="model.borderWidthBottom" title="Border width bottom" min="0"/>' +
-                '       </div>' +
-                '       <div class="block_field border_width" data-ng-show="model.borderWidth < 0">' +
-                '           <label>Border width left</label>' +
-                '           <input type="number" data-ng-model="model.borderWidthLeft" title="Border width left" min="0"/>' +
-                '       </div>' +
-                '       <div class="block_field padding">' +
-                '           <label>Padding</label>' +
-                '           <input type="number" data-ng-model="model.padding" title="padding" min="0"/>' +
-                '       </div>' +
-                '   </div>' +
-                '</div>',
+            templateUrl: utils.getResourceUrl('facebook', 'ng/chayka-facebook-thumbnail-block-control.html'),
             scope: {
                 api: '=?facebookThumbnailBlockControl',
                 model: '=',
@@ -530,6 +399,19 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                         }
 
                         return style;
+                    },
+
+                    switchComplexity: function(param){
+                        var m = $scope.model;
+                        if(m[param] >= 0){
+                            m[param + 'Top'] = m[param];
+                            m[param + 'Right'] = m[param];
+                            m[param + 'Bottom'] = m[param];
+                            m[param + 'Left'] = m[param];
+                            m[param] = -1;
+                        }else{
+                            m[param] = Math.max(m[param + 'Top'], m[param + 'Right'], m[param + 'Bottom'], m[param + 'Left']);
+                        }
                     },
 
                     renderBlock: function(){

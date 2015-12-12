@@ -14,23 +14,27 @@
   display: block;
   clear: both;
   height: 0;
+  border-top: 1px #888 solid;
 }
 .chayka-facebook-thumbnail_generator .tabs > .tab {
   float: left;
   cursor: pointer;
   padding: 5px 10px;
   margin-right: -1px;
-  border-color: transparent transparent #888 transparent;
-  border-style: solid;
+  border-color: transparent;
+  border-style: solid solid none solid;
   border-width: 1px;
   text-transform: capitalize;
 }
 .chayka-facebook-thumbnail_generator .tabs > .tab.active {
-  border-color: #888 #888 transparent #888;
+  border-color: #888 #888 #fff #888;
+  border-style: solid;
+  margin-bottom: -1px;
 }
 .chayka-facebook-thumbnail_generator > .thumbnail_preview {
   float: left;
-  width: 610px;
+  width: 600px;
+  padding-right: 10px;
 }
 .chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas {
   width: 600px;
@@ -42,7 +46,9 @@
 }
 .chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas .preview_background {
   width: 600px;
-  height: auto;
+  height: 315px;
+  background-size: cover;
+  background-position: center top;
   position: absolute;
   top: 0;
   left: 0;
@@ -127,73 +133,98 @@
 .facebook-thumbnail_block_control > .form .image_picker img {
   max-height: 260px;
 }
+.facebook-thumbnail_block_control > .form > .button_complexity {
+  float: right;
+  padding: 6px;
+  height: 30px;
+}
 .facebook-thumbnail_block_control > .form > .block_field {
   width: 300px;
+  font-size: 16px;
+  line-height: 30px;
+  padding-bottom: 5px;
+}
+.facebook-thumbnail_block_control > .form > .block_field .wp-picker-container {
+  position: absolute;
+}
+.facebook-thumbnail_block_control > .form > .block_field .wp-picker-container > .wp-color-result {
+  display: inline-block;
+  margin: 0;
+  height: 28px;
+}
+.facebook-thumbnail_block_control > .form > .block_field .wp-picker-container > .wp-color-result:after {
+  line-height: 28px;
+  text-align: left;
 }
 .facebook-thumbnail_block_control > .form > .block_field > label {
   display: inline-block;
-  width: 40%;
+  width: 105px;
   vertical-align: top;
 }
 .facebook-thumbnail_block_control > .form > .block_field > input {
   display: inline-block;
-  width: 140px;
+  width: 150px;
   vertical-align: top;
   height: 30px;
+  margin: 0;
 }
 .facebook-thumbnail_block_control > .form > .block_field > select {
   display: inline-block;
   width: auto;
   vertical-align: top;
   height: 30px;
+  margin: 0;
 }
 .facebook-thumbnail_block_control > .form > .block_field.size_field > input {
-  width: 125px;
-  text-align: right;
+  width: 139px;
 }
 .facebook-thumbnail_block_control > .form > .block_field.size_field > select {
-  width: 44px;
+  width: 45px;
+}
+.facebook-thumbnail_block_control > .form > .block_field.anchor > select {
+  width: 139px;
+}
+.facebook-thumbnail_block_control > .form > .block_field.anchor > .facebook-anchor_picker {
+  width: 45px;
+  height: 30px;
 }
 .facebook-thumbnail_block_control > .form > .block_field.color_field > .wp-picker-container {
-  margin: 5px 0 0 4px;
-  position: absolute;
+  margin-left: 4px;
 }
 .facebook-thumbnail_block_control > .form > .block_field.color_field > .wp-picker-container > .wp-color-result {
-  width: 140px;
+  width: 159px;
+}
+.facebook-thumbnail_block_control > .form > .block_field.color_opacity_field > .wp-picker-container > .wp-color-result {
+  width: 90px;
+}
+.facebook-thumbnail_block_control > .form > .block_field.color_opacity_field > input {
+  width: 50px;
+  margin-left: 125px;
+}
+.facebook-thumbnail_block_control > .form > .block_field.color_opacity_field > .unit {
+  background-color: #e0e0e0;
+  display: inline-block;
+  margin-left: -8px;
+  padding: 0 3px;
 }
 .facebook-thumbnail_block_control > .form > .block_field.font_field > input {
   width: 40px;
 }
 .facebook-thumbnail_block_control > .form > .block_field.font_field > select {
-  width: 125px;
+  width: 146px;
 }
 .facebook-thumbnail_block_control > .form > .block_field.text_align .button {
   padding: 3px;
 }
-.facebook-thumbnail_block_control > .form > .block_field.anchor > select {
-  width: 125px;
+.facebook-thumbnail_block_control > .form > .block_field.padding_complex > label {
+  width: 200px;
 }
-.facebook-thumbnail_block_control > .form > .block_field.anchor > .facebook-anchor_picker {
-  width: 44px;
+.facebook-thumbnail_block_control > .form > .block_field.padding_complex > input {
+  width: 55px;
 }
-.facebook-thumbnail_block_control > .form.box > .block_field {
-  width: 300px;
+.facebook-thumbnail_block_control > .form > .block_field.border_width_complex > label {
+  width: 200px;
 }
-.facebook-thumbnail_block_control > .form.box > .block_field > label {
-  display: inline-block;
-  width: 55%;
-  vertical-align: top;
-}
-.facebook-thumbnail_block_control > .form.box > .block_field > input {
-  display: inline-block;
-  width: 120px;
-  vertical-align: top;
-  height: 30px;
-}
-.facebook-thumbnail_block_control > .form.box > .block_field.color_field > .wp-picker-container {
-  margin: 5px 0 0 4px;
-  position: absolute;
-}
-.facebook-thumbnail_block_control > .form.box > .block_field.color_field > .wp-picker-container > .wp-color-result {
-  width: 90px;
+.facebook-thumbnail_block_control > .form > .block_field.border_width_complex > input {
+  width: 55px;
 }

@@ -3,6 +3,7 @@
 namespace Chayka\Facebook;
 
 use Chayka\Helpers\FsHelper;
+use Chayka\Helpers\HttpHeaderHelper;
 use Chayka\Helpers\Util;
 use Chayka\WP\Models\PostModel;
 use Chayka\WP\Models\UserModel;
@@ -15,6 +16,7 @@ class FacebookController extends Controller{
 
     public function init(){
         // NlsHelper::load('main');
+//        ini_set('memory_limit', '512M');
          InputHelper::captureInput();
     }
 
@@ -117,6 +119,9 @@ class FacebookController extends Controller{
         die('<script src="//connect.facebook.net/'.$locale.'/all.js"></script>');
     }
 
+    const THUMBNAIL_WIDTH = 1200;
+    const THUMBNAIL_HEIGHT = 630;
+
     /**
      * Facebook thumbnail
      */
@@ -126,18 +131,37 @@ class FacebookController extends Controller{
         $postId = FsHelper::hideExtension($imageId);
         FontHelper::init('res/fonts', Plugin::getInstance());
 
-        $thumbnailWidth = 1200;
-        $thumbnailHeight = 630;
+        $thumbnailWidth = self::THUMBNAIL_WIDTH;
+        $thumbnailHeight = self::THUMBNAIL_HEIGHT;
 
         $post = PostModel::selectById($postId);
 
         $json = $post->getMeta('fb_thumbnail');
 
+        if(!$json){
+            if($post->getThumbnailId()){
+                $tb = $post->getThumbnailData_Full();
+                HttpHeaderHelper::redirect($tb['url']);
+            }else{
+                HttpHeaderHelper::setResponseCode(404);
+                return $this->setNotFound404();
+            }
+        }
+        $post->loadTerms();
+        $blocks = [
+            'site' => get_bloginfo('site_name'),
+            'description' => get_bloginfo('description'),
+            'title' => $post->getTitle(),
+            'excerpt' => $post->getExcerpt(),
+            'categories' => join(', ', $post->getTerms('category')),
+            'tags' => join(', ', $post->getTerms('post_tag')),
+        ];
+
         $data = json_decode($json, true);
 //        Util::print_r($data);
-
-        $bgPath = $this->url2path($data['background']);
-        $lgPath = $this->url2path($data['logo']);
+//        Util::print_r($blocks);
+//        die();
+        $bgPath = $data['background']?$this->url2path($data['background']['url']):'';
 
         $string = 'The quick brown fox jumps over the lazy dog';
 //        $string = 'oooA';
@@ -147,49 +171,73 @@ class FacebookController extends Controller{
         try{
             $bg = $this->readImage($bgPath);
 
-            $im = $bg ? $bg : imagecreatetruecolor($thumbnailWidth, $thumbnailHeight);
+            $im = imagecreatetruecolor($thumbnailWidth, $thumbnailHeight);
 //            $im = $bg;
             imagealphablending ($im, true);
             imagesavealpha ( $im, false );
 
 //            imagedestroy($bg);
 
-            $faderColor = imagecolorallocatealpha($im, 0,0,0,50);
+//            $fadeColor = imagecolorallocatealpha($im, 0,0,0,50);
+//
+//            imagefilledrectangle($im, 0, 0, imagesx($im), imagesy($im), $fadeColor);
 
-            imagefilledrectangle($im, 0, 0, imagesx($im), imagesy($im), $faderColor);
+            $bgWidth = imagesx($bg);
+            $bgHeight = imagesy($bg);
+            $widthRatio = $thumbnailWidth / $bgWidth;
+            $heightRatio = $thumbnailHeight / $bgHeight;
+            $rescaledBgHeight = $bgHeight * $widthRatio;
+            $rescaledBgWidth = $bgWidth * $heightRatio;
 
-            $logo = $this->readImage($lgPath);
+            if($rescaledBgHeight >= $thumbnailHeight){
+                imagecopyresampled($im, $bg, 0, 0, 0, 0, $thumbnailWidth, $thumbnailHeight, $bgWidth, $thumbnailHeight * $bgWidth / $thumbnailWidth);
+            }else{
+                imagecopyresampled($im, $bg, 0, 0, ($bgWidth - $rescaledBgWidth) / 2, 0, $thumbnailWidth, $thumbnailHeight, $rescaledBgWidth, $bgHeight);
+            }
+            $im = imagecrop($im, [
+                'x' => round((imagesx($im) - $thumbnailWidth) / 2),
+                'y' => 0,
+                'width' => $thumbnailWidth,
+                'height' => $thumbnailHeight
+            ]);
+
+            if($data['fade']){
+                $data['fade'] = array_merge($data['fade'], [
+                    'x' => 0,
+                    'y' => 0,
+                    'width' => 100,
+                    'height' => 100,
+                    'unitWidth' => '%',
+                    'unitHeight' => '%'
+                ]);
+
+                $this->renderBlock($im, $data['fade']);
+            }
+
+            $lgPath = $data['logo']?$this->url2path($data['logo']['url']):'';
+            $logo = $lgPath?$this->readImage($lgPath):null;
 
             if($logo){
                 imagealphablending ($logo, false);
                 imagesavealpha ( $logo, true );
-                $logoWidth = 300;
-                $bgRatio = imagesx($im) / $thumbnailWidth;
-                $logoRatio = imagesx($logo) / $logoWidth;
-                $dstLogoWidth = intval($logoWidth * $bgRatio);
-                $dstLogoHeight = intval(imagesy($logo) / $logoRatio * $bgRatio);
+                $width = Util::getItem($data['logo'], 'width', 0);
+                $unitWidth = Util::getItem($data['logo'], 'unitWidth', 'px');
+                $width = '%' === $unitWidth ? $width / 100 * self::THUMBNAIL_WIDTH : $width * 2;
+                $logoRatio = $width / imagesx($logo);
+                $height = imagesy($logo) * $logoRatio;
+                $data['logo']['height'] = $height / 2;
+                list($x, $y) = $this->getBlockXY($data['logo']);
 
-                imagecopyresampled($im, $logo, 100 * $bgRatio, 100 * $bgRatio, 0, 0, $dstLogoWidth, $dstLogoHeight, imagesx($logo), imagesy($logo));
+                imagecopyresampled($im, $logo, $x, $y, 0, 0, $width, $height, imagesx($logo), imagesy($logo));
             }
 
-            $im = imagescale($im, $thumbnailWidth);
-
-//            $orange = imagecolorallocate($im, 220, 0, 200);
-//            imagestring($im, 30, 10, 10, $string, $orange);
-//            imagettftext($im, 30, 0, 50, 50, $orange, FontHelper::getFontFilePath('Montserrat'), $string);
-            $this->renderTextBlock($im, $string, [
-                'font-family' => 'ProximaNova_B',
-                'font-size' => 40,
-                'x' => 400,
-                'y' => 150,
-                'width' => 700,
-//                'text-align' => 'right',
-                'border-width' => 4,
-                'border-color' => '#fff',
-                'padding' => 40,
-//                'color' => '#0f0',
-                'background-color' => '#000000',
-            ]);
+            foreach($blocks as $blockId =>$text){
+                $block = Util::getItem($data, $blockId);
+                if($block && Util::getItem($block, 'active', true)){
+                    $this->renderTextBlock($im, $text, $block);
+                }
+            }
+//            die();
             switch($imageFormat){
                 case 'jpg':
                     header("Content-type: image/jpg");
@@ -316,48 +364,87 @@ class FacebookController extends Controller{
         return $lines;
     }
 
-    protected function renderTextBlock($image, $text, $params = []){
-        $fontSize = Util::getItem($params, 'font-size', 10);
-        $fontFamily = Util::getItem($params, 'font-family');
-        $width = Util::getItem($params, 'width', 1000);
-        $x = Util::getItem($params, 'x', 0);
-        $y = Util::getItem($params, 'y', 100);
-        $textAlign = Util::getItem($params, 'text-align', 'left');
-//        $color = imagecolorallocate($image, 255, 255, 255);
-        $color = $this->allocateHashColor($image, Util::getItem($params, 'color', '#fff'));
+    protected function getBlockXY($block){
+        $x = Util::getItem($block, 'x', 0);
+        $unitX = Util::getItem($block, 'unitX', 'px');
+        $x = '%' === $unitX ? $x / 100 * self::THUMBNAIL_WIDTH : $x * 2;
 
-        $hashBgColor = Util::getItem($params, 'background-color');
-        $bgColor = $hashBgColor ? $this->allocateHashColor($image, $hashBgColor):null;
+        $y = Util::getItem($block, 'y', 0);
+        $unitY = Util::getItem($block, 'unitY', 'px');
+        $y = '%' === $unitY ? $y / 100 * self::THUMBNAIL_HEIGHT : $y * 2;
 
-        $padding = Util::getItem($params, 'padding', 0);
-        $paddingTop = Util::getItem($params, 'padding-top', $padding);
-        $paddingRight = Util::getItem($params, 'padding-right', $padding);
-        $paddingBottom = Util::getItem($params, 'padding-bottom', $padding);
-        $paddingLeft = Util::getItem($params, 'padding-left', $padding);
+        $width = Util::getItem($block, 'width', 0);
+        $unitWidth = Util::getItem($block, 'unitWidth', 'px');
+        $width = '%' === $unitWidth ? $width / 100 * self::THUMBNAIL_WIDTH : $width * 2;
 
-        $borderWidth = Util::getItem($params, 'border-width', 0);
-        $borderWidthTop = Util::getItem($params, 'border-width-top', $borderWidth);
-        $borderWidthRight = Util::getItem($params, 'border-width-right', $borderWidth);
-        $borderWidthBottom = Util::getItem($params, 'border-width-bottom', $borderWidth);
-        $borderWidthLeft = Util::getItem($params, 'border-width-left', $borderWidth);
+        $height = Util::getItem($block, 'height', 0);
+        $unitHeight = Util::getItem($block, 'unitHeight', 'px');
+        $height = '%' === $unitHeight ? $height / 100 * self::THUMBNAIL_HEIGHT : $height * 2;
 
-        $hashBorderColor = Util::getItem($params, 'border-color');
+        $anchor = Util::getItem($block, 'anchor', 'left-top');
+
+        switch($anchor){
+            case 'left-top':
+                break;
+            case 'center-top':
+                $x -= $width / 2;
+                break;
+            case 'right-top':
+                $x -= $width;
+                break;
+            case 'left-center':
+                $y -= $height / 2;
+                break;
+            case 'center-center':
+                $x -= $width / 2;
+                $y -= $height / 2;
+                break;
+            case 'right-center':
+                $x -= $width;
+                $y -= $height / 2;
+                break;
+            case 'left-bottom':
+                $y -= $height;
+                break;
+            case 'center-bottom':
+                $x -= $width / 2;
+                $y -= $height;
+                break;
+            case 'right-bottom':
+                $x -= $width;
+                $y -= $height;
+                break;
+        }
+
+        return [round($x),round($y)];
+    }
+
+    public function renderBlock($image, $params = []){
+        $width = Util::getItem($params, 'width', 300);
+        $unitWidth = Util::getItem($params, 'unitWidth', 'px');
+        $width = '%' === $unitWidth ? $width / 100 * self::THUMBNAIL_WIDTH : $width * 2;
+
+        $height = Util::getItem($params, 'height', 160);
+        $unitHeight = Util::getItem($params, 'unitHeight', 'px');
+        $height = '%' === $unitHeight ? $height / 100 * self::THUMBNAIL_HEIGHT : $height * 2;
+
+//        imagealphablending ($image, false);
+//        imagesavealpha ( $image, true );
+
+        $hashBgColor = Util::getItem($params, 'backgroundColor', '#000');
+        $bgOpacity = Util::getItem($params, 'backgroundOpacity', 0);
+        $bgColor = $hashBgColor ? $this->allocateHashColor($image, $hashBgColor, $bgOpacity):null;
+
+        $borderWidth = Util::getItem($params, 'borderWidth', 0) * 2;
+        $borderWidthTop = $borderWidth < 0 ? Util::getItem($params, 'borderWidthTop', $borderWidth / 2) * 2 : $borderWidth;
+        $borderWidthRight = $borderWidth < 0 ? Util::getItem($params, 'borderWidthRight', $borderWidth / 2) * 2 : $borderWidth;
+        $borderWidthBottom = $borderWidth < 0 ? Util::getItem($params, 'borderWidthBottom', $borderWidth / 2) * 2 : $borderWidth;
+        $borderWidthLeft = $borderWidth < 0 ? Util::getItem($params, 'borderWidthLeft', $borderWidth / 2) * 2 : $borderWidth;
+
+        $hashBorderColor = Util::getItem($params, 'borderColor');
         $borderColor = $hashBorderColor ? $this->allocateHashColor($image, $hashBorderColor):null;
 
-        $hlColor = imagecolorallocate($image, 200, 200, 200);
-        $dotColor = imagecolorallocate($image, 255, 0, 0);
-        $blColor = imagecolorallocate($image, 0, 0, 255);
-
-        $clientWidth = $width - $borderWidthLeft - $paddingLeft - $paddingRight - $borderWidthRight;
-
-        $lines = $this->splitStringToFitWidth($text, $fontFamily, $fontSize, $clientWidth);
-
-        $lineHeight = $fontSize * 1.5;
-        $baseline = 0.25;
-
-        $clientHeight = $lineHeight * count($lines);
-
-        $height = $clientHeight + $borderWidthTop + $paddingTop + $paddingBottom + $borderWidthBottom;
+        list($x, $y) = $this->getBlockXY($params);
 
         if($bgColor){
             imagefilledrectangle($image, $x, $y, $x + $width, $y + $height, $bgColor);
@@ -387,10 +474,93 @@ class FacebookController extends Controller{
             /**
              * Bottom border
              */
-            for($i = 0; $i < $borderWidthTop; $i++){
+            for($i = 0; $i < $borderWidthBottom; $i++){
                 imageline($image, $x, $y + $height - $i, $x + $width, $y + $height - $i, $borderColor);
             }
         }
+
+        return [$x, $y];
+    }
+
+    protected function renderTextBlock($image, $text, $params = []){
+//        Util::print_r($params);
+        $fontSize = Util::getItem($params, 'fontSize', 10) * 1.5 ;
+        $fontFamily = Util::getItem($params, 'fontFamily');
+        $width = Util::getItem($params, 'width', 600);
+        $unitWidth = Util::getItem($params, 'unitWidth', 'px');
+        $width = '%' === $unitWidth ? $width / 100 * self::THUMBNAIL_WIDTH : $width * 2;
+
+        $textAlign = Util::getItem($params, 'textAlign', 'left');
+
+        $color = $this->allocateHashColor($image, Util::getItem($params, 'color', '#fff'));
+
+//        $hashBgColor = Util::getItem($params, 'backgroundColor', '#000');
+//        $bgOpacity = Util::getItem($params, 'backgroundOpacity', 0);
+//        $bgColor = $hashBgColor ? $this->allocateHashColor($image, $hashBgColor, $bgOpacity):null;
+
+        $padding = Util::getItem($params, 'padding', 0) * 2;
+        $paddingTop = $padding < 0 ? Util::getItem($params, 'paddingTop', $padding / 2) * 2 : $padding;
+        $paddingRight = $padding < 0 ? Util::getItem($params, 'paddingRight', $padding / 2) * 2 : $padding;
+        $paddingBottom = $padding < 0 ? Util::getItem($params, 'paddingBottom', $padding / 2 ) * 2 : $padding;
+        $paddingLeft = $padding < 0 ? Util::getItem($params, 'paddingLeft', $padding / 2) * 2 : $padding;
+
+        $borderWidth = Util::getItem($params, 'borderWidth', 0) * 2;
+        $borderWidthTop = $borderWidth < 0 ? Util::getItem($params, 'borderWidthTop', $borderWidth / 2) * 2 : $borderWidth;
+        $borderWidthRight = $borderWidth < 0 ? Util::getItem($params, 'borderWidthRight', $borderWidth / 2) * 2 : $borderWidth;
+        $borderWidthBottom = $borderWidth < 0 ? Util::getItem($params, 'borderWidthBottom', $borderWidth / 2) * 2 : $borderWidth;
+        $borderWidthLeft = $borderWidth < 0 ? Util::getItem($params, 'borderWidthLeft', $borderWidth / 2) * 2 : $borderWidth;
+
+//        $hashBorderColor = Util::getItem($params, 'borderColor');
+//        $borderColor = $hashBorderColor ? $this->allocateHashColor($image, $hashBorderColor):null;
+
+        $clientWidth = $width - $borderWidthLeft - $paddingLeft - $paddingRight - $borderWidthRight;
+
+        $lines = $this->splitStringToFitWidth($text, $fontFamily, $fontSize, $clientWidth);
+
+        $lineHeight = $fontSize * 1.5;
+        $baseline = 0.25;
+
+        $clientHeight = $lineHeight * count($lines);
+
+        $height = $clientHeight + $borderWidthTop + $paddingTop + $paddingBottom + $borderWidthBottom;
+
+        $params['height'] = $height / 2;
+
+        list($x, $y) = $this->renderBlock($image, $params);
+//        list($x, $y) = $this->getBlockXY($params);
+
+//        if($bgColor){
+//            imagefilledrectangle($image, $x, $y, $x + $width, $y + $height, $bgColor);
+//        }
+//        if($borderColor){
+//            /**
+//             * Left border
+//             */
+//            for($i = 0; $i < $borderWidthLeft; $i++){
+//                imageline($image, $x + $i, $y, $x + $i, $y + $height, $borderColor);
+//            }
+//
+//            /**
+//             * Top border
+//             */
+//            for($i = 0; $i < $borderWidthTop; $i++){
+//                imageline($image, $x, $y + $i, $x + $width, $y + $i, $borderColor);
+//            }
+//
+//            /**
+//             * Right border
+//             */
+//            for($i = 0; $i < $borderWidthRight; $i++){
+//                imageline($image, $x + $width - $i, $y, $x + $width - $i, $y + $height, $borderColor);
+//            }
+//
+//            /**
+//             * Bottom border
+//             */
+//            for($i = 0; $i < $borderWidthTop; $i++){
+//                imageline($image, $x, $y + $height - $i, $x + $width, $y + $height - $i, $borderColor);
+//            }
+//        }
         foreach($lines as $line){
             $offset = 0;
             switch($textAlign){

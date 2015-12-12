@@ -1,16 +1,16 @@
 <div class="chayka-facebook-thumbnail_generator">
     <div class="thumbnail_preview">
         <div class="tabs">
-            <div class="tab background" data-ng-class="{active: 'background'===tab}" data-ng-click="tab='background'">{{"Background" | nls}}</div>
-            <div class="tab logo" data-ng-class="{active: 'logo'===tab}" data-ng-click="tab='logo'">{{"Logo" | nls}}</div>
-            <div class="tab fade" data-ng-class="{active: 'fade'===tab}" data-ng-click="tab='fade'">{{"Fade" | nls}}</div>
-            <div class="tab block" data-ng-repeat="(block, text) in blocks" data-ng-class="{active: block===tab}" data-ng-click="$parent.tab=block">{{block | nls}}</div>
+            <div class="tab background" data-ng-class="{active: isTabActive('background')}" data-ng-click="activateTab('background')">{{"Background" | nls}}</div>
+            <div class="tab logo" data-ng-class="{active: isTabActive('logo')}" data-ng-click="activateTab('logo')">{{"Logo" | nls}}</div>
+            <div class="tab fade" data-ng-class="{active: isTabActive('fade')}" data-ng-click="activateTab('fade')">{{"Fade" | nls}}</div>
+            <div class="tab block" data-ng-repeat="(block, text) in blocks" data-ng-class="{active: isTabActive(block)}" data-ng-click="activateTab(block)">{{block | nls}}</div>
         </div>
         <div class="thumbnail_canvas">
-            <img class="preview_background" data-ng-show="!!model.background.url" data-ng-src="{{model.background.url}}" data-ng-style="blockControls.background.getBlockStyle()">
-            <div class="preview_fade" data-ng-style="blockControls.fade.getBlockStyle()"></div>
-            <img class="preview_logo" data-ng-show="!!model.logo.url" data-ng-src="{{model.logo.url}}" data-ng-style="blockControls.logo.getBlockStyle()">
-            <div class="preview_block {{block}}" data-ng-repeat="(block, text) in blocks" data-ng-style="blockControls[block].getBlockStyle()" data-ng-show="!!model[block] && !!model[block].active">
+            <div class="preview_background" data-ng-show="!!model.background.url" data-ng-style="getBlockStyle('background')" data-ng-click="activateTab('background')"></div>
+            <div class="preview_fade" data-ng-style="getBlockStyle('fade')" data-ng-click="activateTab('fade')" data-ng-dblclick="activateTab('background')"></div>
+            <img class="preview_logo" data-ng-show="!!model.logo.url" data-ng-src="{{model.logo.url}}" data-ng-style="getBlockStyle('logo')" data-ng-click="activateTab('logo')" >
+            <div class="preview_block {{block}}" data-ng-repeat="(block, text) in blocks" data-ng-style="getBlockStyle(block)" data-ng-click="activateTab(block)">
                 {{text}}
             </div>
         </div>
