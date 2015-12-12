@@ -486,6 +486,9 @@ class FacebookController extends Controller{
 //        Util::print_r($params);
         $fontSize = Util::getItem($params, 'fontSize', 10) * 1.5 ;
         $fontFamily = Util::getItem($params, 'fontFamily');
+        if(!$fontFamily){
+            return false;
+        }
         $width = Util::getItem($params, 'width', 600);
         $unitWidth = Util::getItem($params, 'unitWidth', 'px');
         $width = '%' === $unitWidth ? $width / 100 * self::THUMBNAIL_WIDTH : $width * 2;
