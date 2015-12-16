@@ -1,0 +1,51 @@
+.chayka-facebook-thumbnail_setup{
+    & > .fonts_wizard{
+        width: 300px;
+        & > p{
+
+        }
+    }
+
+    & > .fonts_list{
+        & > .font{
+            width: 300px;
+            border: 1px #aaa solid;
+            border-radius: 3px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            padding: 1ex;
+
+            &:hover{
+                border-color: #666;
+            }
+
+            &.active{
+                border-color: #444;
+            }
+            & > .font_title{
+                display: inline-block;
+                width: 180px;
+            }
+            & > .font_controls{
+                display: inline-block;
+                //width: 80px;
+                float: right;
+                & > button{
+                    line-height: normal;
+                    margin: -5px -5px -5px 5px;
+                    padding: 0 5px;
+                }
+            }
+
+            &.no_default_font{
+                border-color: maroon;
+                color: maroon;
+            }
+        }
+    }
+
+    & > .btn-upload{
+        width: 300px;
+        text-align: center;
+    }
+}

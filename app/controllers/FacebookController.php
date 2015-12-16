@@ -5,6 +5,7 @@ namespace Chayka\Facebook;
 use Chayka\Helpers\FsHelper;
 use Chayka\Helpers\HttpHeaderHelper;
 use Chayka\Helpers\Util;
+use Chayka\WP\Helpers\AclHelper;
 use Chayka\WP\Models\PostModel;
 use Chayka\WP\Models\UserModel;
 use Chayka\WP\MVC\Controller;
@@ -119,6 +120,90 @@ class FacebookController extends Controller{
         die('<script src="//connect.facebook.net/'.$locale.'/all.js"></script>');
     }
 
+    /**
+     * Upload fonts zip
+     */
+    public function uploadFontsZipAction(){
+        AclHelper::apiPermissionRequired();
+        if(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name'])){
+            try{
+                $zipFn = $_FILES['file']['tmp_name'];
+
+                $za = new \ZipArchive();
+
+                $za->open($zipFn);
+
+                $entries = [];
+                for( $i = 0; $i < $za->numFiles; $i++ ){
+                    $entry = $za->getNameIndex( $i );
+                    $ext = FsHelper::getExtension($entry);
+                    if(in_array($ext, ['ttf', 'eot', 'otf', 'woff', 'svg'])){
+                        copy('zip://'.$zipFn.'#'.$entry, Plugin::getInstance()->getBasePath().Plugin::FONTS_DIR.'/'.basename($entry));
+                        $entries[] = $entry;
+                    }
+                }
+
+                FontHelper::init();
+                FontHelper::createCssFile('fonts.css');
+
+                JsonHelper::respond($this->getFontsState());
+
+            }catch(\Exception $e){
+                JsonHelper::respondException($e);
+            }
+        }else{
+            JsonHelper::respondError('File was not uploaded');
+        }
+    }
+
+    /**
+     * Delete font action
+     */
+    public function deleteFontAction(){
+        AclHelper::apiPermissionRequired();
+        $font = InputHelper::checkParam('font')->required()->getValue();
+        InputHelper::validateInput(true);
+
+        $files = glob(Plugin::getInstance()->getBasePath().Plugin::FONTS_DIR.'/'.$font.'.*');
+
+        foreach($files as $file){
+            unlink($file);
+        }
+
+        FontHelper::init();
+
+        JsonHelper::respond($this->getFontsState());
+
+    }
+
+    /**
+     * Set default action
+     */
+    public function setDefaultFontAction(){
+        AclHelper::apiPermissionRequired();
+        $font = InputHelper::checkParam('font')->required()->getValue();
+        InputHelper::validateInput(true);
+
+        OptionHelper::setOption('thumbnailDefaultFont', $font);
+
+        JsonHelper::respond($this->getFontsState());
+    }
+
+
+    protected function getFontsState(){
+        FontHelper::init();
+        $fonts = FontHelper::getTrueTypeFontNames();
+        $defaultFont = OptionHelper::getOption('thumbnailDefaultFont');
+        if($defaultFont && !in_array($defaultFont, $fonts)){
+            $defaultFont = '';
+            OptionHelper::setOption('thumbnailDefaultFont', $defaultFont);
+        }
+        return [
+            'fonts' => $fonts,
+            'defaultFont' => $defaultFont
+        ];
+    }
+
     const THUMBNAIL_WIDTH = 1200;
     const THUMBNAIL_HEIGHT = 630;
 
@@ -129,7 +214,7 @@ class FacebookController extends Controller{
         $imageId = InputHelper::getParam('image_id');
         $imageFormat = FsHelper::getExtension($imageId);
         $postId = FsHelper::hideExtension($imageId);
-        FontHelper::init('res/fonts', Plugin::getInstance());
+        FontHelper::init();
 
         $thumbnailWidth = self::THUMBNAIL_WIDTH;
         $thumbnailHeight = self::THUMBNAIL_HEIGHT;

@@ -54,7 +54,13 @@ class FontHelper{
      * @param string $fontDir
      * @param Plugin $app
      */
-    public static function init($fontDir, $app){
+    public static function init($fontDir = null, $app = null){
+        if(!$app){
+            $app = Plugin::getInstance();
+        }
+        if(!$fontDir){
+            $fontDir = Plugin::FONTS_DIR;
+        }
         static::$fontDirPath = $app->getInstance()->getBasePath().$fontDir;
         static::$fontDirUrl = $app->getInstance()->getBaseUrl().$fontDir;
         $files = FsHelper::readDir(static::$fontDirPath, false);

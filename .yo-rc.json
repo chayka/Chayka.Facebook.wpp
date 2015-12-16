@@ -58,12 +58,14 @@
         "facebook-open-graph"
       ],
       "Admin": [
-        "facebook"
+        "facebook",
+        "thumbnail-generator"
       ],
       "Facebook": []
     },
     "consolePages": [
-      "facebook"
+      "facebook",
+      "thumbnail-generator"
     ]
   }
 }

@@ -24,7 +24,7 @@ class MetaboxController extends Controller{
     public function facebookOpenGraphAction(){
         $this->enqueueNgScriptStyle('chayka-facebook-thumbnail-generator');
 
-        FontHelper::init('res/fonts', Plugin::getInstance());
+        FontHelper::init();
 
         $url = FontHelper::createCssFile('fonts.css');
 

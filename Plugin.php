@@ -16,6 +16,8 @@ class Plugin extends WP\Plugin{
     
     public static $instance = null;
 
+    const FONTS_DIR = 'res/fonts';
+
     public static function init(){
         if(!static::$instance){
             static::$instance = $app = new self(__FILE__, array(
@@ -77,6 +79,8 @@ class Plugin extends WP\Plugin{
      */
     public function registerResources($minimize = false) {
         $this->registerBowerResources(true);
+        $this->registerScript('angular-upload', 'lib/angular-upload/angular-upload.min.js', ['angular']);
+        $this->registerStyle('angular-upload', 'lib/angular-upload/src/directives/btnUpload.min.css');
 
         $this->setResSrcDir('src/');
         $this->setResDistDir('dist/');
@@ -86,6 +90,8 @@ class Plugin extends WP\Plugin{
         $this->registerScript('chayka-facebook', 'ng/chayka-facebook.js', ['chayka-auth']);
         $this->registerNgScript('chayka-facebook-thumbnail-generator', 'ng/chayka-facebook-thumbnail-generator.js', ['chayka-forms', 'chayka-nls', 'chayka-utils', 'chayka-wp-admin']);
         $this->registerNgStyle('chayka-facebook-thumbnail-generator', 'ng/chayka-facebook-thumbnail-generator.css', ['chayka-forms', 'chayka-wp-admin']);
+        $this->registerNgScript('chayka-facebook-thumbnail-setup', 'ng/chayka-facebook-thumbnail-setup.js', ['chayka-facebook-thumbnail-generator', 'angular-upload']);
+        $this->registerNgStyle('chayka-facebook-thumbnail-setup', 'ng/chayka-facebook-thumbnail-setup.css', ['chayka-facebook-thumbnail-generator', 'angular-upload']);
 
 		/* chayka: registerResources */
     }
@@ -103,6 +109,8 @@ class Plugin extends WP\Plugin{
      */
     public function registerConsolePages(){
         $this->addConsolePage('Facebook', 'update_core', 'facebook', '/admin/facebook', 'dashicons-facebook', '76');
+        $this->addConsoleSubPage('facebook', 'Thumbnail Generator', 'update_core', 'thumbnail-generator', '/admin/thumbnail-generator');
+
 
         /* chayka: registerConsolePages */
     }

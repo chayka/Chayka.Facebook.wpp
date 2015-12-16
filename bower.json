@@ -1,25 +1,27 @@
 {
-    "name": "Chayka.Facebook",
-    "description": "Facebook integration for Chayka Framework",
-    "version": "0.0.1",
-    "license": "MIT",
-    "authors": [
-        "Boris Mossounov <borix@tut.by>"
-    ],
-    "keywords": [
-        "WordPress",
-        "Chayka",
-        "Facebook",
-        "auth",
-        "share"
-    ],
-    "ignore": [
-        "**/.*",
-        "node_modules",
-        "bower_components",
-        "res/lib",
-        "test",
-        "tests"
-    ],
-    "dependencies": {}
+  "name": "Chayka.Facebook",
+  "description": "Facebook integration for Chayka Framework",
+  "version": "0.0.1",
+  "license": "MIT",
+  "authors": [
+    "Boris Mossounov <borix@tut.by>"
+  ],
+  "keywords": [
+    "WordPress",
+    "Chayka",
+    "Facebook",
+    "auth",
+    "share"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "res/lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-upload": "~1.0.12"
+  }
 }

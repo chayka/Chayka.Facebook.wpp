@@ -1,0 +1,37 @@
+<div class="chayka-facebook-thumbnail_setup">
+    <div data-ng-show="!fonts || !fonts.length" class="fonts_wizard">
+        <p>
+            In order to use facebook thumbnail generator you need to upload web-fonts that will be used.
+        </p>
+
+        <p>
+            Each web-font consists usually of several files:
+        </p>
+        <ul>
+            <li><strong>.ttf</strong> - TrueType Font</li>
+            <li><strong>.otf</strong> - OpenType Font</li>
+            <li><strong>.eot</strong> - Embedded OpenType Font</li>
+            <li><strong>.woff</strong> - The Web Open Font Format</li>
+            <li><strong>.svg</strong> - SVG Font/Shapes</li>
+        </ul>
+
+        <p>
+            In order to upload a web-font to server you will need a zip file containing all font files in it's root.
+        </p>
+    </div>
+    <div data-ng-show="!!fonts && !!fonts.length" class="fonts_list">
+        <div data-ng-show="!defaultFont" class="font no_default_font">
+            <strong>Heads up:</strong> You need to select default font!
+        </div>
+        <div data-ng-repeat="font in fonts" class="font" data-ng-class="{active: defaultFont === font}">
+            <span class="font_title" data-ng-style="{'font-family': font + ', sans-serif'}">{{font}}</span>
+            <span class="font_controls">
+                <button class="button dashicons-before dashicons-trash" data-ng-click="deleteFontClicked(font)"></button>
+                <button class="button dashicons-before" data-ng-click="setDefaultFontClicked(font)" data-ng-show="fonts.length > 1" data-ng-class="{'dashicons-star-empty': defaultFont !== font, 'dashicons-star-filled': defaultFont === font}"></button>
+            </span>
+        </div>
+    </div>
+    <div data-upload-button class="button button-primary btn-upload" data-url="/api/facebook/upload-fonts-zip/"
+         data-on-success="onUploadSuccess(response)">Upload zip file with web-fonts
+    </div>
+</div>
