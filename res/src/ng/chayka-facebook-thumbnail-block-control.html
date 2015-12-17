@@ -19,8 +19,9 @@
         </div>
     </div>
     <div class="form image" data-ng-show="'image' === tab">
+        <select data-ng-model="model.mode" data-ng-options="mode for mode in ['default', 'custom']" data-ng-show="!!defaultImage"></select>
         <div class="image_picker" data-media-picker data-mode="url" data-size="full" data-model="model.url"
-             data-picker-button-text="Pick Image" data-title="Pick Image">
+             data-picker-button-text="Pick Image" data-title="Pick Image" data-ng-show="!defaultImage || 'custom' === model.mode">
             {{imageHint}}
         </div>
     </div>
@@ -59,7 +60,7 @@
         </div>
         <div class="block_field font_field font_size">
             <label>{{"Font" | nls}}</label>
-            <select data-ng-model="model.fontFamily" title="Font size" data-ng-options="font for font in fonts"
+            <select data-ng-model="model.fontFamily" title="Font size" data-ng-options="font for font in ['default'].concat(fonts)"
                     data-ng-show="!!fonts.length"></select>
             <input type="number" data-ng-model="model.fontSize" title="Font size" min="0"/>
         </div>

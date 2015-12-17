@@ -6,11 +6,34 @@ angular.module('chayka-facebook-thumbnail-setup', ['chayka-forms', 'chayka-nls',
             templateUrl: utils.getResourceUrl('facebook', 'ng/chayka-facebook-thumbnail-setup.html'),
             scope:{
                 fonts: '=',
-                defaultFont: '@',
-                defaultLogo: '@'
+                defaultFont: '@?',
+                defaultLogo: '@?',
+                defaultBackground: '@?'
             },
             controller: ['$scope', 'modals', 'ajax', function($scope, modals, ajax){
+
+                var tg = window.Chayka.Facebook.ThumbnailGenerator;
+
+                angular.extend($scope, tg);
+
                 angular.extend($scope, {
+
+                    tab: 'fonts',
+
+                    currentTemplate: null,
+
+                    temporaryTemplate: {},
+
+                    activateTab: function(tab){
+                        $scope.tab = tab;
+                    },
+
+                    isTabActive: function(tab){
+                        if(!$scope.defaultFont){
+                            return tab === 'fonts';
+                        }
+                        return tab === $scope.tab;
+                    },
 
                     updateFontsFromPayload: function(payload){
                         $scope.fonts.splice(0, $scope.fonts.length);
@@ -45,10 +68,40 @@ angular.module('chayka-facebook-thumbnail-setup', ['chayka-forms', 'chayka-nls',
                         });
                     },
 
+                    onDefaultImageChange: function(){
+                        ajax.post('/api/facebook/set-default-images/', {
+                            logo: $scope.defaultLogo,
+                            background: $scope.defaultBackground
+                        }, {
+                            success: function(data){
+                                //console.dir(data.payload);
+                                //$scope.updateFontsFromPayload(data.payload);
+                            }
+                        });
+                    },
+
                     onUploadSuccess: function(response){
                         //console.dir({'upload': data});
                         $scope.updateFontsFromPayload(response.data.payload);
+                    },
+
+                    customizeTemplateClicked: function(template){
+                        $scope.temporaryTemplate = angular.extend({}, template);
+                        $scope.currentTemplate = template;
+                    },
+
+                    updateTemplateClicked: function(){
+                        utils.updateObject($scope.currentTemplate, $scope.temporaryTemplate);
+                        $scope.currentTemplate = null;
+                        $scope.temporaryTemplate = $scope.defaultSiteThumbnail;
+                    },
+
+                    cancelTemplateUpdateClicked: function(){
+                        utils.updateObject($scope.currentTemplate, $scope.temporaryTemplate);
+                        $scope.currentTemplate = null;
+                        $scope.temporaryTemplate = $scope.defaultSiteThumbnail;
                     }
+
                 });
             }]
         };

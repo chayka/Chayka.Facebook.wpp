@@ -10,6 +10,9 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                 model: '=',
                 blocks: '=?',
                 fonts: '=?',
+                defaultFont: '=?',
+                defaultBackground: '=?',
+                defaultLogo: '=?',
                 postId: '@?'
             },
 
@@ -23,7 +26,7 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                     tab: 'background',
 
                     init: function(){
-                        utils.setDefaults($scope.model, {
+                        utils.setObjectDefaults($scope.model, {
                             background: {
                                 url: ''
                             },
@@ -54,12 +57,22 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                         return $element.find('.thumbnail_preview .' + block);
                     },
 
+                    getModelImageUrl: function(model, defaultUrl){
+                        return 'default' === model.mode ? defaultUrl : model.url;
+                    },
+
                     getBlockStyle: function(block){
                         var style = $scope.blockControls[block] && $scope.blockControls[block].getBlockStyle() || {};
                         if('background' === block){
-                            style['background-image'] = $scope.model.background.url && 'url(' + $scope.model.background.url + ')';
+                            var url = $scope.getModelImageUrl($scope.model.background, $scope.defaultBackground);
+                            style['background-image'] = url && 'url(' + url + ')';
                         }
                         return style;
+                    },
+
+                    getBlockText: function(block){
+                        var text = $scope.blocks[block].text || '';
+                        return Array.isArray(text) ? text.join(', ') : text;
                     },
 
                     getCanvasStyle: function(){
@@ -76,6 +89,14 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
 
                     isTabActive: function(tab){
                         return tab === $scope.tab;
+                    },
+
+                    isTabVisible: function(block){
+                        var visible = $scope.model[block] && $scope.model[block].active;
+                        if($scope.blocks[block].type && $scope.model.type){
+                            return visible && $scope.blocks[block].type === $scope.model.type;
+                        }
+                        return visible;
                     }
 
                 });
@@ -155,7 +176,9 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                 tabsStr: '@tabs',
                 imageHint: '@?',
                 text: '=?',
-                fonts: '=?'
+                fonts: '=?',
+                defaultImage: '=?',
+                defaultFont: '=?'
             },
             controller: ['$scope', function($scope){
                 angular.extend($scope, {
@@ -177,8 +200,12 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
 
                     init: function(){
                         $scope.tab = $scope.tabs[0];
+                        $scope.initModel();
+                    },
+
+                    initModel: function(){
                         if($scope.isTabShown('position')) {
-                            utils.setDefaults($scope.model, {
+                            utils.setObjectDefaults($scope.model, {
                                 x: 0,
                                 unitX: 'px',
                                 y: 0,
@@ -189,15 +216,15 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                             });
                         }
                         if($scope.isTabShown('text')) {
-                            utils.setDefaults($scope.model, {
-                                fontFamily: '',
+                            utils.setObjectDefaults($scope.model, {
+                                fontFamily: 'default',
                                 fontSize: 20,
                                 color: '#ffffff',
                                 textAlign: 'left'
                             });
                         }
                         if($scope.isTabShown('box')) {
-                            utils.setDefaults($scope.model, {
+                            utils.setObjectDefaults($scope.model, {
                                 backgroundColor: '#000000',
                                 backgroundOpacity: 0,
                                 borderColor: '#ffffff',
@@ -210,9 +237,10 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                                 paddingTop: 0,
                                 paddingRight: 0,
                                 paddingBottom: 0,
-                                paddingLeft: 0,
+                                paddingLeft: 0
                             });
                         }
+
                     },
 
                     isTabShown: function(tab){
@@ -292,13 +320,22 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                     },
 
                     getBlockStyle: function(){
+                        //$scope.initModel();
+
                         var $block = $scope.$parent.getThumbnailElement($scope.block),
                             m = $scope.model,
                             style = {};
 
+                        if(!m){
+                            return {
+                                'visibility':'hidden'
+                            };
+                        }
+
                         if($scope.isTabShown('text')){
+                            var fontFamily = 'default' === m.fontFamily ? $scope.defaultFont : m.fontFamily;
                             angular.extend(style, {
-                                'font-family': m.fontFamily || 'inherit',
+                                'font-family': fontFamily || 'inherit',
                                 'font-size': m.fontSize ? m.fontSize + 'px' : '1em',
                                 'color': m.color || '#FFFFFF',
                                 'text-align': m.textAlign

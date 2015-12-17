@@ -177,7 +177,7 @@ class FacebookController extends Controller{
     }
 
     /**
-     * Set default action
+     * Set default font action
      */
     public function setDefaultFontAction(){
         AclHelper::apiPermissionRequired();
@@ -202,6 +202,23 @@ class FacebookController extends Controller{
             'fonts' => $fonts,
             'defaultFont' => $defaultFont
         ];
+    }
+
+    /**
+     * Set default logo action
+     */
+    public function setDefaultImagesAction(){
+        AclHelper::apiPermissionRequired();
+        $logo = InputHelper::getParam('logo');
+        $background = InputHelper::getParam('background');
+
+        OptionHelper::setOption('thumbnailDefaultLogo', $logo);
+        OptionHelper::setOption('thumbnailDefaultBackground', $background);
+
+        JsonHelper::respond([
+            'logo' => OptionHelper::getOption('thumbnailDefaultLogo'),
+            'background' => OptionHelper::getOption('thumbnailDefaultBackground'),
+        ]);
     }
 
     const THUMBNAIL_WIDTH = 1200;
