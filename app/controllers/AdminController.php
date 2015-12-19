@@ -2,9 +2,7 @@
 
 namespace Chayka\Facebook;
 
-use Chayka\Helpers\Util;
 use Chayka\WP\MVC\Controller;
-use Chayka\WP\Queries\TaxonomyQuery;
 use Chayka\WP\Queries\TermQuery;
 
 class AdminController extends Controller{
@@ -26,16 +24,16 @@ class AdminController extends Controller{
             'name' => 'Site Thumbnail',
             'type' => 'site',
             'background' => [
-                'mode' => 'default',
+                'imageMode' => 'default',
                 'url' => '',
             ],
             'logo' => [
                 'active' => true,
-                'mode' => 'default',
+                'imageMode' => 'default',
                 'url' => '',
                 'x' => 50,
                 'unitX' => '%',
-                'y' => 5,
+                'y' => 10,
                 'unitY' => '%',
                 'width' => 30,
                 'unitWidth' => '%',
@@ -77,7 +75,7 @@ class AdminController extends Controller{
                 'anchor' => 'center-top',
                 'x' => 50,
                 'unitX' => '%',
-                'y' => 85,
+                'y' => 80,
                 'unitY' => '%',
                 'width' => 90,
                 'unitWidth' => '%',
@@ -93,12 +91,12 @@ class AdminController extends Controller{
             'name' => 'Default Post Thumbnail',
             'type' => 'post',
             'background' => [
-                'mode' => 'default',
+                'imageMode' => 'default',
                 'url' => '',
             ],
             'logo' => [
                 'active' => true,
-                'mode' => 'default',
+                'imageMode' => 'default',
                 'url' => '',
                 'x' => 50,
                 'unitX' => '%',
@@ -126,7 +124,7 @@ class AdminController extends Controller{
                 'unitX' => '%',
                 'y' => 75,
                 'unitY' => '%',
-                'width' => 90,
+                'width' => 70,
                 'unitWidth' => '%',
                 'backgroundColor' => '#000000',
                 'backgroundOpacity' => 0,
@@ -140,16 +138,16 @@ class AdminController extends Controller{
             'name' => 'Default Taxonomy Thumbnail',
             'type' => 'taxonomy',
             'background' => [
-                'mode' => 'default',
+                'imageMode' => 'default',
                 'url' => '',
             ],
             'logo' => [
                 'active' => true,
-                'mode' => 'default',
+                'imageMode' => 'default',
                 'url' => '',
                 'x' => 50,
                 'unitX' => '%',
-                'y' => 7,
+                'y' => 10,
                 'unitY' => '%',
                 'width' => 30,
                 'unitWidth' => '%',
@@ -190,7 +188,7 @@ class AdminController extends Controller{
                 'anchor' => 'center-top',
                 'x' => 50,
                 'unitX' => '%',
-                'y' => 85,
+                'y' => 82,
                 'unitY' => '%',
                 'width' => 90,
                 'unitWidth' => '%',
@@ -203,26 +201,15 @@ class AdminController extends Controller{
 
         ];
 
-        $siteTemplate = OptionHelper::getOption('thumbnailTemplates.site');
-        $siteTemplate = $siteTemplate ?
-            json_decode($siteTemplate, true) :
-            $defaultSiteThumbnail;
-
-        $postTypeTemplates = OptionHelper::getOption('thumbnailTemplates.postType');
-        $postTypeTemplates = $postTypeTemplates ?
-            json_decode($postTypeTemplates, true) :
-            ['default' => $defaultPostThumbnail];
-
-        $taxonomyTemplates = OptionHelper::getOption('thumbnailTemplates.taxonomy');
-        $taxonomyTemplates = $taxonomyTemplates ?
-            json_decode($taxonomyTemplates, true) :
-            ['default' => $defaultTaxonomyThumbnail];
-
-        $templates = [
-            'site' => $siteTemplate,
-            'post' => $postTypeTemplates,
-            'taxonomy' => $taxonomyTemplates
-        ];
+        $templates = OptionHelper::getOption('thumbnailTemplates');
+        if(!$templates){
+            $templates = [
+                'site' => $defaultSiteThumbnail,
+                'post' => ['default' => $defaultPostThumbnail],
+                'taxonomy' => ['default' => $defaultTaxonomyThumbnail]
+            ];
+            OptionHelper::setOption('thumbnailTemplates', $templates);
+        }
 
         $topCategories = TermQuery::query('category')
             ->order_DESC()

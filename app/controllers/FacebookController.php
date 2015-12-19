@@ -190,6 +190,11 @@ class FacebookController extends Controller{
     }
 
 
+    /**
+     * Get font state
+     *
+     * @return array
+     */
     protected function getFontsState(){
         FontHelper::init();
         $fonts = FontHelper::getTrueTypeFontNames();
@@ -219,6 +224,14 @@ class FacebookController extends Controller{
             'logo' => OptionHelper::getOption('thumbnailDefaultLogo'),
             'background' => OptionHelper::getOption('thumbnailDefaultBackground'),
         ]);
+    }
+
+    public function saveTemplatesAction(){
+        $templates = InputHelper::checkParam('templates')->required()->getValue();
+        InputHelper::validateInput(true);
+        OptionHelper::setOption('thumbnailTemplates', $templates);
+
+        JsonHelper::respond(OptionHelper::getOption('thumbnailTemplates'));
     }
 
     const THUMBNAIL_WIDTH = 1200;

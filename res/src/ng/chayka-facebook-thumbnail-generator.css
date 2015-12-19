@@ -23,6 +23,30 @@
   border-style: solid;
   margin-bottom: -1px;
 }
+.tabs > .tab.add_tab {
+  height: 18px;
+  font-size: 22px;
+}
+.blocks_available {
+  width: 300px;
+}
+.blocks_available > .block {
+  border: 1px #888 solid;
+  border-radius: 4px;
+  margin-top: 10px;
+  cursor: pointer;
+  overflow: hidden;
+}
+.blocks_available > .block:hover {
+  box-shadow: 0 0 3px #ccc;
+}
+.blocks_available > .block > .block_title {
+  background-color: #eee;
+  padding: 5px;
+}
+.blocks_available > .block > .block_text {
+  padding: 5px;
+}
 .chayka-facebook-thumbnail_generator {
   overflow-y: auto;
 }
@@ -44,7 +68,7 @@
   position: relative;
   overflow: hidden;
 }
-.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas .preview_background {
+.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas > .preview_background {
   width: 600px;
   height: 315px;
   background-size: cover;
@@ -53,8 +77,9 @@
   top: 0;
   left: 0;
   z-index: 1;
+  cursor: pointer;
 }
-.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas .preview_fade {
+.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas > .preview_fade {
   position: absolute;
   left: 0;
   right: 0;
@@ -62,18 +87,30 @@
   bottom: 0;
   z-index: 2;
   box-sizing: border-box;
+  cursor: pointer;
 }
-.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas .preview_logo {
+.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas > .preview_fade:hover {
+  outline: 1px dotted white;
+}
+.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas > .preview_logo {
   z-index: 3;
   position: absolute;
   height: auto;
+  cursor: pointer;
 }
-.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas .preview_block {
+.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas > .preview_logo:hover {
+  outline: 1px dotted white;
+}
+.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas > .preview_block {
   z-index: 4;
   position: absolute;
   height: auto;
   box-sizing: border-box;
   line-height: normal;
+  cursor: pointer;
+}
+.chayka-facebook-thumbnail_generator > .thumbnail_preview > .thumbnail_canvas > .preview_block:hover {
+  outline: 1px dotted white;
 }
 .chayka-facebook-thumbnail_generator > .thumbnail_editor {
   width: 300px;

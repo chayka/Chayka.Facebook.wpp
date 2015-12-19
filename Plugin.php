@@ -92,6 +92,8 @@ class Plugin extends WP\Plugin{
         $this->registerNgStyle('chayka-facebook-thumbnail-generator', 'ng/chayka-facebook-thumbnail-generator.css', ['chayka-forms', 'chayka-wp-admin']);
         $this->registerNgScript('chayka-facebook-thumbnail-setup', 'ng/chayka-facebook-thumbnail-setup.js', ['chayka-facebook-thumbnail-generator', 'angular-upload']);
         $this->registerNgStyle('chayka-facebook-thumbnail-setup', 'ng/chayka-facebook-thumbnail-setup.css', ['chayka-facebook-thumbnail-generator', 'angular-upload']);
+        $this->registerNgScript('chayka-facebook-thumbnail-post', 'ng/chayka-facebook-thumbnail-post.js', ['chayka-facebook-thumbnail-generator']);
+        $this->registerNgStyle('chayka-facebook-thumbnail-post', 'ng/chayka-facebook-thumbnail-post.css', ['chayka-facebook-thumbnail-generator']);
 
 		/* chayka: registerResources */
     }

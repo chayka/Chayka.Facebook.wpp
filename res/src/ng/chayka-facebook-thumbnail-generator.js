@@ -25,6 +25,8 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
 
                     tab: 'background',
 
+                    modalTabPicker: null,
+
                     init: function(){
                         utils.setObjectDefaults($scope.model, {
                             background: {
@@ -58,7 +60,7 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                     },
 
                     getModelImageUrl: function(model, defaultUrl){
-                        return 'default' === model.mode ? defaultUrl : model.url;
+                        return 'default' === model.imageMode ? defaultUrl : model.url;
                     },
 
                     getBlockStyle: function(block){
@@ -97,6 +99,61 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                             return visible && $scope.blocks[block].type === $scope.model.type;
                         }
                         return visible;
+                    },
+
+                    addBlockClicked: function(id){
+                        if(id){
+                            var blockModel = {
+                                x: 0,
+                                unitX: 'px',
+                                y: 0,
+                                unitY: 'px',
+                                width: 50,
+                                unitWidth: '%',
+                                anchor: 'left-top',
+
+                                fontFamily: 'default',
+                                fontSize: 20,
+                                color: '#ffffff',
+                                textAlign: 'left',
+
+                                backgroundColor: '#000000',
+                                backgroundOpacity: 0,
+                                borderColor: '#ffffff',
+                                borderWidth: 0,
+                                borderWidthTop: 0,
+                                borderWidthRight: 0,
+                                borderWidthBottom: 0,
+                                borderWidthLeft: 0,
+                                padding: 0,
+                                paddingTop: 0,
+                                paddingRight: 0,
+                                paddingBottom: 0,
+                                paddingLeft: 0
+                            };
+
+                            $scope.model[id] = $scope.model[id] || blockModel;
+
+                            $scope.model[id].active = true;
+
+                        }else{
+                            $scope.modalTabPicker.show();
+                        }
+                    },
+
+                    getBlocksAvailable: function(){
+                        var available = {};
+                        for(var id in $scope.blocks){
+                            if(
+                                $scope.blocks.hasOwnProperty(id) &&
+                                (!$scope.model[id] || !$scope.model[id].active) &&
+                                (!$scope.blocks[id].type || !$scope.model.type || $scope.blocks[id].type === $scope.model.type)
+                            ){
+                                available[id] = $scope.blocks[id];
+                            }
+                        }
+
+                        return available;
                     }
 
                 });

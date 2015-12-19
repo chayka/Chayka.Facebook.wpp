@@ -92,8 +92,15 @@ angular.module('chayka-facebook-thumbnail-setup', ['chayka-forms', 'chayka-nls',
 
                     updateTemplateClicked: function(){
                         utils.updateObject($scope.currentTemplate, $scope.temporaryTemplate);
-                        $scope.currentTemplate = null;
-                        $scope.temporaryTemplate = $scope.defaultSiteThumbnail;
+                        ajax.post('/api/facebook/save-templates',{
+                            templates: $scope.templates
+                        }, {
+                            success: function(data){
+                                $scope.currentTemplate = null;
+                                $scope.temporaryTemplate = $scope.defaultSiteThumbnail;
+                                utils.updateObject($scope.templates, data.payload);
+                            }
+                        });
                     },
 
                     cancelTemplateUpdateClicked: function(){

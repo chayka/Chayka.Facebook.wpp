@@ -19,9 +19,9 @@
         </div>
     </div>
     <div class="form image" data-ng-show="'image' === tab">
-        <select data-ng-model="model.mode" data-ng-options="mode for mode in ['default', 'custom']" data-ng-show="!!defaultImage"></select>
+        <select data-ng-model="model.imageMode" data-ng-options="mode for mode in ['default', 'custom']" data-ng-show="!!defaultImage"></select>
         <div class="image_picker" data-media-picker data-mode="url" data-size="full" data-model="model.url"
-             data-picker-button-text="Pick Image" data-title="Pick Image" data-ng-show="!defaultImage || 'custom' === model.mode">
+             data-picker-button-text="Pick Image" data-title="Pick Image" data-ng-style="{opacity: !defaultImage || 'custom' === model.imageMode ? 1 : 0.5}">
             {{imageHint}}
         </div>
     </div>

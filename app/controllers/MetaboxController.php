@@ -22,7 +22,7 @@ class MetaboxController extends Controller{
     }
 
     public function facebookOpenGraphAction(){
-        $this->enqueueNgScriptStyle('chayka-facebook-thumbnail-generator');
+        $this->enqueueNgScriptStyle('chayka-facebook-thumbnail-post');
 
         FontHelper::init();
 
@@ -30,6 +30,47 @@ class MetaboxController extends Controller{
 
         wp_enqueue_style('facebook-gd2-fonts', $url);
 
+        $p = $this->view->post;
+        $p->loadTerms();
+
+        $blocks = [
+            'site_title' => [
+                'title' => 'Site Title',
+                'text' => get_bloginfo('site_name')
+            ],
+            'site_description' => [
+                'title' => 'Site Description',
+                'text' => get_bloginfo('description')
+            ],
+            'title' => [
+                'title' => 'Title',
+                'text' => $p->getTitle()
+            ],
+            'excerpt' => [
+                'title' => 'Excerpt',
+                'text' => $p->getExcerpt()
+            ],
+            'categories' => [
+                'title' => 'Categories',
+                'text' => $p->getTerms('category')
+            ],
+            'tags' => [
+                'title' => 'Tags',
+                'text' => $p->getTerms('post_tag')
+            ],
+        ];
+
+        $tb = $p->getThumbnailData_Full();
+
+        $this->view->assign('blocks', $blocks);
         $this->view->assign('fonts', FontHelper::getTrueTypeFontNames());
+        $this->view->assign('defaultFont', OptionHelper::getOption('thumbnailDefaultFont'));
+        $this->view->assign('defaultLogo', OptionHelper::getOption('thumbnailDefaultLogo'));
+        $this->view->assign('defaultBackground', $tb?$tb['url']:OptionHelper::getOption('thumbnailDefaultBackground'));
+
+        $templates = OptionHelper::getOption('thumbnailTemplates');
+        $postTemplates = empty($templates)?null:$templates['post'];
+        $this->view->assign('templates', $postTemplates);
+
     }
 }

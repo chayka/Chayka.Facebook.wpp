@@ -28,76 +28,32 @@
             </div>
         </div-->
         <?php /* fb_thumbnail */
-        $name = 'metabox-fb_thumbnail';
-        $value = $this->post->getMeta('fb_thumbnail');
-        $this->post->loadTerms();
-        /**
-         * @var \Chayka\WP\Models\PostModel $p
-         */
-        $p      = $this->post;
-        $blocks = [
-            'site' => get_bloginfo('site_name'),
-            'description' => get_bloginfo('description'),
-            'title' => $p->getTitle(),
-            'excerpt' => $p->getExcerpt(),
-            'categories' => join(', ', $p->getTerms('category')),
-            'tags' => join(', ', $p->getTerms('post_tag')),
-        ];
-
-        $tb = $p->getThumbnailData_Full();
-
-        $def = [
-            'background' => [
-                'url' => $tb['url'],
-            ],
-            'logo' => [
-                'url' => '',
-                'x' => 0,
-                'unitX' => 'px',
-                'y' => 0,
-                'unitY' => 'px',
-                'width' => 100,
-                'unitWidth' => 'px',
-                'anchor' => 'left-top',
-            ],
-            'fade' => [
-                'backgroundColor' => '#000000',
-                'backgroundOpacity' => 50,
-                'borderColor' => '#000000',
-                'borderWidth' => 0,
-            ],
-        ];
-
-        foreach($blocks as $block=>$text){
-            $def[$block] = [
-                'active' => 'title' === $block,
-                'color' => '#FFFFFF',
-                'size' => 20,
-                'x' => 0,
-                'unitX' => 'px',
-                'y' => 0,
-                'unitY' => 'px',
-                'width' => 50,
-                'unitWidth' => '%'
-            ];
-        }
-
-        if(!$value){
-            $value = $def;
-        }else{
-            $value = array_merge($def, json_decode($value, true));
-        }
-
-        $this->declareVars(['fonts' => []]);
-
         wp_enqueue_media();
+        $thumbnailLayout = $this->post->getMeta('fb_thumbnail_layout');
+        if(!$thumbnailLayout){
+            $thumbnailLayout = 'featured';
+        }
         ?>
-        <div class="form_field fullsize fb_thumbnail" data-form-field="fb_thumbnail">
-            <label class="">Thumbnail (og:image)</label>
-            <input name="<?php echo $name;?>" value="{{meta.fb_thumbnail | json}}" type="hidden" data-ng-init="meta.fb_thumbnail=<?php $this->json($value, true); ?>; postData=<?php $this->json($blocks, true); ?>; fonts = <?php $this->json($this->fonts, true); ?>;" data-ng-model="meta.fb_thumbnail" title="Thumbnail (og:image)"/>
-            <div data-facebook-thumbnail-generator data-model="meta.fb_thumbnail" data-blocks="postData" data-fonts="fonts" data-post-id="<?php echo $p->getId();?>"></div>
-        </div>
+        <script>
+            var Chayka = window.Chayka || {};
+            Chayka.Facebook = Chayka.Facebook || {};
+            Chayka.Facebook.ThumbnailGenerator = <?php $this->json([
+                'fonts' => $this->fonts,
+                'defaultFont' => $this->defaultFont,
+                'defaultLogo' => $this->defaultLogo,
+                'defaultBackground' => $this->defaultBackground,
+                'templates' => $this->templates,
+                'blocks' => $this->blocks,
+            ]);?>;
 
+        </script>
+
+        <div class="form_field fullsize fb_thumbnail_mode" data-form-field="fb_thumbnail_mode">
+            <label class="">Thumbnail (og:image)</label>
+            <input name="metabox-fb_thumbnail_layout" value="{{meta.fb_thumbnail_layout }}" type="hidden" data-ng-init="meta.fb_thumbnail_layout='<?php echo $thumbnailLayout ?>';" data-ng-model="meta.fb_thumbnail_layout" title="Thumbnail (og:image)"/>
+            <input name="metabox-fb_thumbnail_data" value="{{meta.fb_thumbnail_data | json }}" type="hidden" data-ng-init="meta.fb_thumbnail_data=<?php $this->json($this->post->getMeta('fb_thumbnail_data'), true); ?>;" data-ng-model="meta.fb_thumbnail_data" title="Thumbnail (og:image)"/>
+            <div data-post-thumbnail-editor data-custom-template="meta.fb_thumbnail_data" data-layout="meta.fb_thumbnail_layout"></div>
+        </div>
 
 
         <!-- chayka: fields -->
