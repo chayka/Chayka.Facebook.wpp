@@ -5,3 +5,10 @@
 .chayka-facebook-thumbnail_post > .generator_not_set_up > img {
   max-width: 600px;
 }
+.chayka-facebook-thumbnail_post > .thumbnail_setup > .layout_picker {
+  margin-bottom: 1em;
+}
+.chayka-facebook-thumbnail_post > .thumbnail_setup > img {
+  max-width: 600px;
+  display: block;
+}

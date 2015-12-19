@@ -59,6 +59,10 @@
         }
         & > .block_text{
             padding: 5px;
+
+            &:empty{
+                display: none;
+            }
         }
     }
 }
@@ -216,18 +220,24 @@
 
     }
     & > .form{
-        .image_picker{
-            img{
-                max-height: 260px;
+        &.image{
+            & > select{
+                width: 100%;
+                margin-bottom: 1em;
+            }
+            & > .image_picker{
+                img{
+                    max-height: 260px;
+                }
             }
         }
-        & > .button_complexity{
+        .button_complexity{
             float: right;
             padding: 6px;
             height: 30px;
 
         }
-        & > .block_field{
+        .block_field{
             width: 300px;
             font-size: 16px;
             line-height: 30px;

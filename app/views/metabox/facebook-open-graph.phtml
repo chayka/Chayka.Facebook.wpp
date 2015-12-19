@@ -33,6 +33,8 @@
         if(!$thumbnailLayout){
             $thumbnailLayout = 'featured';
         }
+        $customThumbnail = $this->post->getMeta('fb_thumbnail_custom');
+        $customThumbnail = $customThumbnail ? json_decode($customThumbnail, true) : '';
         ?>
         <script>
             var Chayka = window.Chayka || {};
@@ -51,8 +53,8 @@
         <div class="form_field fullsize fb_thumbnail_mode" data-form-field="fb_thumbnail_mode">
             <label class="">Thumbnail (og:image)</label>
             <input name="metabox-fb_thumbnail_layout" value="{{meta.fb_thumbnail_layout }}" type="hidden" data-ng-init="meta.fb_thumbnail_layout='<?php echo $thumbnailLayout ?>';" data-ng-model="meta.fb_thumbnail_layout" title="Thumbnail (og:image)"/>
-            <input name="metabox-fb_thumbnail_data" value="{{meta.fb_thumbnail_data | json }}" type="hidden" data-ng-init="meta.fb_thumbnail_data=<?php $this->json($this->post->getMeta('fb_thumbnail_data'), true); ?>;" data-ng-model="meta.fb_thumbnail_data" title="Thumbnail (og:image)"/>
-            <div data-post-thumbnail-editor data-custom-template="meta.fb_thumbnail_data" data-layout="meta.fb_thumbnail_layout"></div>
+            <input name="metabox-fb_thumbnail_custom" value="{{meta.fb_thumbnail_custom | json }}" type="hidden" data-ng-init="meta.fb_thumbnail_custom=<?php $this->json($customThumbnail, true); ?>;" data-ng-model="meta.fb_thumbnail_custom" title="Thumbnail (og:image)"/>
+            <div data-post-thumbnail-editor data-custom-template="meta.fb_thumbnail_custom" data-layout="meta.fb_thumbnail_layout"></div>
         </div>
 
 

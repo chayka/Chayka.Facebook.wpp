@@ -13,7 +13,8 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                 defaultFont: '=?',
                 defaultBackground: '=?',
                 defaultLogo: '=?',
-                postId: '@?'
+                postId: '@?',
+                mode: '=?'
             },
 
             controller: ['$scope', '$element', function($scope, $element){

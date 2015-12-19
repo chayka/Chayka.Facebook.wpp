@@ -110,27 +110,29 @@
             <label>{{"Border width left" | nls}}</label>
             <input type="number" data-ng-model="model.borderWidthLeft" title="Border width left" min="0"/>
         </div>
-        <span class="button_complexity button dashicons-before"
-              data-ng-class="{'dashicons-minus': model.padding < 0, 'dashicons-plus': model.padding >= 0}" data-ng-click="switchComplexity('padding')"></span>
-        <div class="block_field padding" data-ng-show="model.padding >= 0">
-            <label>{{"Padding" | nls}}</label>
-            <input type="number" data-ng-model="model.padding" title="padding" min="-1"/>
-        </div>
-        <div class="block_field padding_complex" data-ng-show="model.padding < 0">
-            <label>{{"Padding top" | nls}}</label>
-            <input type="number" data-ng-model="model.paddingTop" title="Padding top" min="0"/>
-        </div>
-        <div class="block_field padding_complex" data-ng-show="model.padding < 0">
-            <label>{{"Padding right" | nls}}</label>
-            <input type="number" data-ng-model="model.paddingRight" title="Padding right" min="0"/>
-        </div>
-        <div class="block_field padding_complex" data-ng-show="model.padding < 0">
-            <label>{{"Padding bottom" | nls}}</label>
-            <input type="number" data-ng-model="model.paddingBottom" title="Padding bottom" min="0"/>
-        </div>
-        <div class="block_field padding_complex" data-ng-show="model.padding < 0">
-            <label>{{"Padding left" | nls}}</label>
-            <input type="number" data-ng-model="model.paddingLeft" title="Padding left" min="0"/>
+        <div class="padding_box" data-ng-show="isTabShown('text')">
+            <span class="button_complexity button dashicons-before"
+                  data-ng-class="{'dashicons-minus': model.padding < 0, 'dashicons-plus': model.padding >= 0}" data-ng-click="switchComplexity('padding')"></span>
+            <div class="block_field padding" data-ng-show="model.padding >= 0">
+                <label>{{"Padding" | nls}}</label>
+                <input type="number" data-ng-model="model.padding" title="padding" min="-1"/>
+            </div>
+            <div class="block_field padding_complex" data-ng-show="model.padding < 0">
+                <label>{{"Padding top" | nls}}</label>
+                <input type="number" data-ng-model="model.paddingTop" title="Padding top" min="0"/>
+            </div>
+            <div class="block_field padding_complex" data-ng-show="model.padding < 0">
+                <label>{{"Padding right" | nls}}</label>
+                <input type="number" data-ng-model="model.paddingRight" title="Padding right" min="0"/>
+            </div>
+            <div class="block_field padding_complex" data-ng-show="model.padding < 0">
+                <label>{{"Padding bottom" | nls}}</label>
+                <input type="number" data-ng-model="model.paddingBottom" title="Padding bottom" min="0"/>
+            </div>
+            <div class="block_field padding_complex" data-ng-show="model.padding < 0">
+                <label>{{"Padding left" | nls}}</label>
+                <input type="number" data-ng-model="model.paddingLeft" title="Padding left" min="0"/>
+            </div>
         </div>
     </div>
 </div>

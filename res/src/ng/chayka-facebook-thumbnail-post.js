@@ -39,6 +39,37 @@ angular.module('chayka-facebook-thumbnail-post', ['chayka-forms', 'chayka-nls', 
                         }
 
                         return options;
+                    },
+
+                    getTemplate: function(){
+                        var defaultLayout = Object.keys($scope.templates)[0],
+                            template = {};
+                        switch($scope.layout){
+                            case 'featured':
+                                template = $scope.templates[defaultLayout];
+                                break;
+                            case 'custom':
+                                template = $scope.customTemplate;
+                                break;
+                            default:
+                                template = $scope.templates[$scope.layout];
+                        }
+
+                        return template;
+                    },
+
+                    customizeTemplateClicked: function(){
+                        var layout = $scope.layout;
+                        if($scope.customTemplate){
+                            modals.confirm('You already have custom layout.\n' +
+                                'Would you like to reset it and create a new custom layout?',
+                                function(){
+                                    $scope.customTemplate = angular.copy($scope.templates[layout]);
+                                });
+                        }else{
+                            $scope.customTemplate = angular.copy($scope.templates[layout]);
+                        }
+                        $scope.layout = 'custom';
                     }
                 });
 
