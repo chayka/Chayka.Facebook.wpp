@@ -191,6 +191,21 @@
 .facebook-thumbnail_block_control > .form .block_field .wp-picker-container {
   position: absolute;
 }
+.facebook-thumbnail_block_control > .form .block_field .wp-picker-container.wp-picker-active {
+  z-index: 10;
+}
+.facebook-thumbnail_block_control > .form .block_field .wp-picker-container.wp-picker-active > .wp-picker-input-wrap {
+  width: 235px;
+  height: 30px;
+  padding: 5px 10px;
+  background-color: white;
+  border: 1px solid #dfdfdf;
+  margin: 5px 0 -7px;
+  display: block;
+}
+.facebook-thumbnail_block_control > .form .block_field .wp-picker-container.wp-picker-active > .wp-picker-input-wrap > input {
+  vertical-align: unset;
+}
 .facebook-thumbnail_block_control > .form .block_field .wp-picker-container > .wp-color-result {
   display: inline-block;
   margin: 0;

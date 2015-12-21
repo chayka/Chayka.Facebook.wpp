@@ -1,30 +1,49 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: borismossounov
- * Date: 15.02.15
- * Time: 13:58
- */
 
 namespace Chayka\Facebook;
 
 use Chayka\Helpers\Util;
 use Chayka\WP\Models;
 use Chayka\WP\Models\CommentModel;
+use Chayka\WP\Models\PostModel;
+use Chayka\WP\Models\TermModel;
 use Chayka\WP\Models\UserModel;
 
 class FacebookHelper {
 
-	protected static $post = null;
+    /**
+     * @var PostModel
+     */
+    protected static $post = null;
 
+    /**
+     * @var TermModel
+     */
+	protected static $term = null;
+
+    /**
+     * @var string
+     */
 	protected static $title = null;
 
+    /**
+     * @var string
+     */
 	protected static $description = null;
 
+    /**
+     * @var array|string
+     */
 	protected static $image = null;
 
+    /**
+     * @var string
+     */
 	protected static $type = 'website';
 
+    /**
+     * @var string
+     */
 	protected static $url = null;
 
 	/**
@@ -45,6 +64,20 @@ class FacebookHelper {
 		return self::$post;
 	}
 
+    /**
+     * @return TermModel
+     */
+    public static function getTerm(){
+        return self::$term;
+    }
+
+    /**
+     * @param TermModel $term
+     */
+    public static function setTerm($term){
+        self::$term = $term;
+    }
+
 	/**
 	 * Set current title
 	 * @param string $title
@@ -63,21 +96,23 @@ class FacebookHelper {
 	 *      OptionHelper::getOption('default_title', get_bloginfo( 'name' ))
 	 *
 	 *
-	 * @param Models\PostModel $post
-	 * @return String
+	 * @param PostModel|TermModel $obj
+     *
+     * @return String
 	 */
-	public static function getTitle($post = null){
-		if(!$post){
-			$post = self::$post;
-		}
-		if($post){
-			if($post->getMeta('fb_title')){
-				return $post->getMeta('fb_title');
-			}
-            if($post->getMeta('seo_title')){
-                return $post->getMeta('seo_title');
+	public static function getTitle($obj = null){
+		if($obj){
+            if($obj instanceof PostModel){
+                if($obj->getMeta('fb_title')){
+                    return $obj->getMeta('fb_title');
+                }
+                if($obj->getMeta('seo_title')){
+                    return $obj->getMeta('seo_title');
+                }
+                return $obj->getTitle();
+            }else if($obj instanceof TermModel){
+                return OptionHelper::getOption('default_title', get_bloginfo( 'name' )) . ': ' . $obj->getName();
             }
-			return $post->getTitle();
 		}
 		if(self::$title){
 			return self::$title;
@@ -107,24 +142,28 @@ class FacebookHelper {
 	 *      HtmlHelper::getMetaDescription()
 	 *      OptionHelper::getOption('default_description', get_bloginfo( 'description' ))
 	 *
-	 * @param Models\PostModel $post
-	 * @return string
+	 * @param PostModel|TermModel $obj
+     *
+     * @return string
 	 */
-	public static function getDescription($post = null){
-		if(!$post){
-			$post = self::$post;
-		}
-		if($post){
-			if($post->getMeta('fb_description')){
-				return $post->getMeta('description');
-			}
-			if($post->getMeta('description')){
-				return $post->getMeta('description');
-			}
-			if($post->getMeta('seo_description')){
-				return $post->getMeta('seo_description');
-			}
-			return $post->getExcerpt();
+	public static function getDescription($obj = null){
+		if($obj){
+            if($obj instanceof PostModel){
+                if($obj->getMeta('fb_description')){
+                    return $obj->getMeta('description');
+                }
+                if($obj->getMeta('description')){
+                    return $obj->getMeta('description');
+                }
+                if($obj->getMeta('seo_description')){
+                    return $obj->getMeta('seo_description');
+                }
+                return $obj->getExcerpt();
+            }else if($obj instanceof TermModel){
+                if($obj->getDescription()){
+                    return $obj->getDescription();
+                }
+            }
 		}
 		if(self::$description){
 			return self::$description;
@@ -145,31 +184,37 @@ class FacebookHelper {
 	 *      attached images
 	 *      default image
 	 *
-	 * @param Models\PostModel $post
-	 * @return String
+	 * @param PostModel|TermModel $obj
+     *
+     * @return String
 	 */
-	public static function getImages($post = null){
+	public static function getImages($obj = null){
 		$images = array();
-		if(!$post){
-			$post = self::$post;
-		}
-		if($post){
-			$attachments = $post->getAttachments('image');
-			$thumbId = $post->getThumbnailId();
+		if($obj){
+            if($obj instanceof PostModel){
+                $images[] = ThumbnailHelper::getPostThumbnailUrl($obj);
+                $images[] = ThumbnailHelper::getSiteThumbnailUrl();
 
-			/**
-			 * @var Models\PostModel $attachment
-			 */
-			if($thumbId && isset($attachments[$thumbId])){
-				$attachment = $attachments[$thumbId];
-				$data = $attachment->loadImageData('full');
-				$images[]= Util::getItem($data, 'url');
-				unset($attachments[$thumbId]);
-			}
-			foreach ($attachments as $attachment){
-				$data = $attachment->loadImageData('full');
-				$images[]= Util::getItem($data, 'url');
-			}
+                $attachments = $obj->getAttachments('image');
+                $thumbId     = $obj->getThumbnailId();
+
+                /**
+                 * @var Models\PostModel $attachment
+                 */
+                if($thumbId && isset($attachments[$thumbId])){
+                    $attachment = $attachments[$thumbId];
+                    $data = $attachment->loadImageData('full');
+                    $images[]= Util::getItem($data, 'url');
+                    unset($attachments[$thumbId]);
+                }
+                foreach ($attachments as $attachment){
+                    $data = $attachment->loadImageData('full');
+                    $images[]= Util::getItem($data, 'url');
+                }
+            }else if($obj instanceof TermModel){
+                $images[] = ThumbnailHelper::getTaxonomyThumbnailUrl($obj);
+                $images[] = ThumbnailHelper::getSiteThumbnailUrl();
+            }
 		}
 		if(self::$image){
 			$images[]= self::$image;
@@ -178,6 +223,8 @@ class FacebookHelper {
 		if($defImg){
 			$images[]= $defImg;
 		}
+
+        $images[]=ThumbnailHelper::getSiteThumbnailUrl();
 
 		return array_unique($images);
 	}
@@ -310,11 +357,11 @@ class FacebookHelper {
 	/**
 	 * Get all the data needed fo post sharing
 	 *
-	 * @param Models\PostModel $post
+	 * @param PostModel|TermModel $obj
 	 *
 	 * @return array
 	 */
-	public static function getFbData($post = null){
+	public static function getFbData($obj = null){
 		$data = array();
 		$admins = self::getAppAdmins();
 		if($admins){
@@ -324,20 +371,19 @@ class FacebookHelper {
 		if($appId){
 			$data['app_id']=$appId;
 		}
-		$fbPost = self::getPost();
-		$title = self::getTitle($post);
+		$title = self::getTitle($obj);
 		if($title){
 			$data['title']=$title;
 		}
-		$desc = self::getDescription($post);
+		$desc = self::getDescription($obj);
 		if($desc){
 			$data['description']=$desc;
 		}
-		$url = self::getUrl($post);
+		$url = self::getUrl($obj);
 		if($url){
 			$data['url']= $url;
 		}
-		$images = self::getImages($post);
+		$images = self::getImages($obj);
 		if($images){
 			$data['images']= $images;
 		}
@@ -345,13 +391,17 @@ class FacebookHelper {
 		if($type){
 			$data['type']= $type;
 		}
-		$author = self::getAuthor($post);
-		if($author){
-			$data['author']= $author;
-		}
-		if($fbPost){
-			$data['post']=$fbPost;
-		}
+        if($obj){
+            if($obj instanceof PostModel){
+                $author = self::getAuthor($obj);
+                if($author){
+                    $data['author']= $author;
+                }
+                $data['post']=$obj;
+            }else if($obj instanceof TermModel){
+                $data['term']=$obj;
+            }
+        }
 
 		return $data;
 	}

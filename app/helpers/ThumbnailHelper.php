@@ -17,6 +17,15 @@ class ThumbnailHelper{
     protected static $defaultBackground = '';
 
     /**
+     * Get saved templates
+     *
+     * @return mixed|void
+     */
+    public static function getTemplates(){
+        return OptionHelper::getOption('thumbnailTemplates');
+    }
+
+    /**
      * Get common site text blocks
      *
      * @return array
@@ -55,6 +64,15 @@ class ThumbnailHelper{
         $blocks = self::getSiteTextBlocks();
 
         return self::renderThumbnail($template, $blocks);
+    }
+
+    /**
+     * Get site thumbnail url
+     *
+     * @return string
+     */
+    public static function getSiteThumbnailUrl(){
+        return '/api/facebook/site-thumbnail/'.Util::serverName().'.png';
     }
 
     /**
@@ -175,6 +193,17 @@ class ThumbnailHelper{
     }
 
     /**
+     * Get post thumbnail url
+     *
+     * @param PostModel $post
+     *
+     * @return string
+     */
+    public static function getPostThumbnailUrl($post){
+        return '/api/facebook/post-thumbnail/'.$post->getId().'.png';
+    }
+
+    /**
      * Get taxonomy term text block
      *
      * @param TermModel|'sample' $term
@@ -215,7 +244,13 @@ class ThumbnailHelper{
         return [];
     }
 
-    public static function renderTaxonomyThumbnail($taxonomy, $layout){
+    /**
+     * @param TermModel $term
+     * @param string $layout
+     *
+     * @return bool|resource
+     */
+    public static function renderTaxonomyThumbnail($term, $layout){
         $templates = OptionHelper::getOption('thumbnailTemplates', []);
 
         $postTemplates = Util::getItem($templates, 'taxonomy');
@@ -225,9 +260,20 @@ class ThumbnailHelper{
         }
         $template['defaultBackground'] = OptionHelper::getOption('thumbnailDefaultBackground');
 
-        $blocks = array_merge(self::getSiteTextBlocks(), self::getTaxonomyTextBlocks($taxonomy));
+        $blocks = array_merge(self::getSiteTextBlocks(), self::getTaxonomyTextBlocks($term));
 
         return self::renderThumbnail($template, $blocks);
+    }
+
+    /**
+     * Get taxonomy thumbnail url
+     *
+     * @param TermModel $term
+     *
+     * @return string
+     */
+    public static function getTaxonomyThumbnailUrl($term){
+        return '/api/facebook/taxonomy-thumbnail/'.$term->getTaxonomy().'/'.$term->getSlug().'.png';
     }
 
     /**
@@ -266,9 +312,9 @@ class ThumbnailHelper{
         $bgWidth = imagesx($bg);
         $bgHeight = imagesy($bg);
         $widthRatio = $thumbnailWidth / $bgWidth;
-        $heightRatio = $thumbnailHeight / $bgHeight;
+//        $heightRatio = $thumbnailHeight / $bgHeight;
         $rescaledBgHeight = $bgHeight * $widthRatio;
-        $rescaledBgWidth = $bgWidth * $heightRatio;
+        $rescaledBgWidth = $thumbnailWidth * $bgHeight / $thumbnailHeight;
 
         if($rescaledBgHeight >= $thumbnailHeight){
             imagecopyresampled($im, $bg, 0, 0, 0, 0, $thumbnailWidth, $thumbnailHeight, $bgWidth, $thumbnailHeight * $bgWidth / $thumbnailWidth);
@@ -315,12 +361,12 @@ class ThumbnailHelper{
 
             imagecopyresampled($im, $logo, $x, $y, 0, 0, $width, $height, imagesx($logo), imagesy($logo));
         }
-        var_dump($blocks);
-        var_dump($template);
-        die();
+//        var_dump($blocks);
+//        var_dump($template);
+//        die();
         foreach($blocks as $blockId =>$data){
             $block = Util::getItem($template, $blockId);
-            if($block && (!isset($block['active']) || $block['active'])){
+            if($block && !empty($block['active'])){
                 self::renderTextBlock($im, $data['text'], $block);
             }
         }
@@ -618,6 +664,17 @@ class ThumbnailHelper{
 
         if(is_array($text)){
             $text = join(', ', $text);
+        }
+
+        $textTransform = Util::getItem($params, 'textTransform', 'none');
+
+        switch($textTransform){
+            case 'uppercase':
+                $text = mb_strtoupper($text);
+                break;
+            case 'lowercase':
+                $text = mb_strtolower($text);
+                break;
         }
         $fontSize = Util::getItem($params, 'fontSize', 10) * 1.5 ;
         $fontFamily = Util::getItem($params, 'fontFamily');

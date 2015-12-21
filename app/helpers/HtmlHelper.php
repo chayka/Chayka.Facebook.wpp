@@ -12,6 +12,7 @@ namespace Chayka\Facebook;
 use Chayka\WP\Helpers\AngularHelper;
 use Chayka\WP\Helpers\ResourceHelper;
 use Chayka\WP\Models\PostModel;
+use Chayka\WP\Models\TermModel;
 
 class HtmlHelper extends \Chayka\WP\Helpers\HtmlHelper{
 
@@ -57,13 +58,20 @@ class HtmlHelper extends \Chayka\WP\Helpers\HtmlHelper{
 	 */
 	public static function renderMeta(){
 		global $post;
+		$obj = null;
+
 		if(is_single() || is_page()){
+			$obj = PostModel::unpackDbRecord($post);
 			FacebookHelper::setType('article');
-			FacebookHelper::setPost(PostModel::unpackDbRecord($post));
+			FacebookHelper::setPost($obj);
+		}elseif(is_tax() || is_category() || is_tag()){
+			$term = get_queried_object();
+			$obj = TermModel::unpackDbRecord($term);
+			FacebookHelper::setType('website');
 		}else{
 			FacebookHelper::setType('website');
 		}
-		self::renderView('facebook/meta.phtml', FacebookHelper::getFbData());
+		self::renderView('facebook/meta.phtml', FacebookHelper::getFbData($obj));
 	}
 
 }

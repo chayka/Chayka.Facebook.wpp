@@ -74,6 +74,10 @@
             <span class="button dashicons-before dashicons-editor-alignright"
                   data-ng-class="{active: 'right'===model.textAlign}" data-ng-click="model.textAlign = 'right'"></span>
         </div>
+        <div class="block_field text_transform">
+            <label>{{"Transform" | nls}}</label>
+            <select data-ng-model="model.textTransform" title="Text Transform" data-ng-options="textTransform for textTransform in ['none', 'lowercase', 'uppercase']"></select>
+        </div>
     </div>
     <div class="form box" data-ng-show="'box' === tab">
         <div class="block_field color_opacity_field background_color color_picker">

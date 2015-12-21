@@ -245,6 +245,25 @@
 
             .wp-picker-container{
                 position: absolute;
+
+                &.wp-picker-active{
+                    z-index: 10;
+
+                    & > .wp-picker-input-wrap{
+                        width: 235px;
+                        height: 30px;
+                        padding: 5px 10px;
+                        background-color: white;
+                        border: 1px solid #dfdfdf;
+                        margin: 5px 0 -7px;
+                        display: block;
+
+                        & > input{
+                            vertical-align: unset;
+                        }
+                    }
+                }
+
                 & > .wp-color-result{
                     display: inline-block;
                     margin: 0;

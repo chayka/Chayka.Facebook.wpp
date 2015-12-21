@@ -7,6 +7,7 @@ use Chayka\Helpers\HttpHeaderHelper;
 use Chayka\Helpers\Util;
 use Chayka\WP\Helpers\AclHelper;
 use Chayka\WP\Models\PostModel;
+use Chayka\WP\Models\TermModel;
 use Chayka\WP\Models\UserModel;
 use Chayka\WP\MVC\Controller;
 use Chayka\Helpers\InputHelper;
@@ -234,13 +235,90 @@ class FacebookController extends Controller{
         JsonHelper::respond(OptionHelper::getOption('thumbnailTemplates'));
     }
 
-    const THUMBNAIL_WIDTH = 1200;
-    const THUMBNAIL_HEIGHT = 630;
+    /**
+     * Facebook site thumbnail
+     */
+    public function siteThumbnailAction(){
+        $image = InputHelper::getParam('image');
+        $imageFormat = FsHelper::getExtension($image);
+
+        try{
+
+            $im = ThumbnailHelper::renderSiteThumbnail();
+
+            if(!$im){
+                return $this->setNotFound404();
+            }
+
+            switch($imageFormat){
+                case 'jpg':
+                    header("Content-type: image/jpg");
+                    imagejpeg($im);
+                    break;
+                case 'gif':
+                    header("Content-type: image/gif");
+                    imagegif($im);
+                    break;
+                case 'png':
+                default:
+                    header("Content-type: image/png");
+                    imagepng($im);
+            }
+            imagedestroy($im);
+        }catch (\Exception $e){
+            JsonHelper::respondException($e);
+        }
+    }
 
     /**
-     * Facebook thumbnail
+     * Facebook taxonomy thumbnail
      */
-    public function thumbnailAction(){
+    public function taxonomyThumbnailAction(){
+        $slug = InputHelper::getParam('term');
+        $taxonomy = InputHelper::getParam('taxonomy');
+        $imageFormat = FsHelper::getExtension($slug);
+        $slug = FsHelper::hideExtension($slug);
+
+        $term = TermModel::selectBySlug($slug, $taxonomy);
+
+        $layout = 'default';
+
+        try{
+
+            $im = ThumbnailHelper::renderTaxonomyThumbnail($term, $layout);
+
+            if(!$im){
+                $im = ThumbnailHelper::renderSiteThumbnail();
+            }
+
+            if(!$im){
+                return $this->setNotFound404();
+            }
+
+            switch($imageFormat){
+                case 'jpg':
+                    header("Content-type: image/jpg");
+                    imagejpeg($im);
+                    break;
+                case 'gif':
+                    header("Content-type: image/gif");
+                    imagegif($im);
+                    break;
+                case 'png':
+                default:
+                    header("Content-type: image/png");
+                    imagepng($im);
+            }
+            imagedestroy($im);
+        }catch (\Exception $e){
+            JsonHelper::respondException($e);
+        }
+    }
+
+    /**
+     * Facebook post thumbnail
+     */
+    public function postThumbnailAction(){
         $imageId = InputHelper::getParam('image_id');
         $imageFormat = FsHelper::getExtension($imageId);
         $postId = FsHelper::hideExtension($imageId);
@@ -249,8 +327,18 @@ class FacebookController extends Controller{
 
         $layout = $post->getMeta('fb_thumbnail_layout');
 
+        $tb = $post->getThumbnailData_Full();
+
+        $templates = ThumbnailHelper::getTemplates();
+
+        if(!$layout && $templates){
+            $postTemplates = Util::getItem($templates, 'post', []);
+            if($postTemplates){
+                $layout = key($postTemplates);
+            }
+        }
+
         if(!$layout || 'featured' === $layout){
-            $tb = $post->getThumbnailData_Full();
             if($tb){
                 HttpHeaderHelper::redirect($tb['url']);
             }else{
@@ -261,6 +349,18 @@ class FacebookController extends Controller{
         try{
 
             $im = ThumbnailHelper::renderPostThumbnail($post, $layout);
+
+            if(!$im){
+                if($tb){
+                    HttpHeaderHelper::redirect($tb['url']);
+                }else{
+                    $im = ThumbnailHelper::renderSiteThumbnail();
+                }
+            }
+
+            if(!$im){
+                return $this->setNotFound404();
+            }
 
             switch($imageFormat){
                 case 'jpg':

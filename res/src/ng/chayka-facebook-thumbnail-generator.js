@@ -17,7 +17,7 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                 mode: '=?'
             },
 
-            controller: ['$scope', '$element', function($scope, $element){
+            controller: ['$scope', '$element', '$timeout', function($scope, $element, $timeout){
                 angular.extend($scope, {
 
                     blockControls:{
@@ -29,6 +29,16 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                     modalTabPicker: null,
 
                     init: function(){
+                        $scope.initModel();
+                        $scope.$watch('model', function(){
+                            $scope.initModel();
+                            $timeout(function(){
+                                $scope.$apply();
+                            }, 0);
+                        });
+                    },
+
+                    initModel: function(){
                         utils.setObjectDefaults($scope.model, {
                             background: {
                                 url: ''
@@ -259,6 +269,8 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                     init: function(){
                         $scope.tab = $scope.tabs[0];
                         $scope.initModel();
+
+                        $scope.$watch('model', $scope.initModel);
                     },
 
                     initModel: function(){
@@ -278,7 +290,8 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                                 fontFamily: 'default',
                                 fontSize: 20,
                                 color: '#ffffff',
-                                textAlign: 'left'
+                                textAlign: 'left',
+                                textTransform: 'none'
                             });
                         }
                         if($scope.isTabShown('box')) {
@@ -317,7 +330,7 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                         return 'rgba('+r+','+g+','+b+','+opacity/100+')';
                     },
 
-                    convertBlockStyle: function($event){
+                    convertBlockStyle: function(){
                         var $block = $scope.$parent.getThumbnailElement($scope.block),
                             pos = $block.position(),
                             m = $scope.model,
@@ -396,7 +409,8 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                                 'font-family': fontFamily || 'inherit',
                                 'font-size': m.fontSize ? m.fontSize + 'px' : '1em',
                                 'color': m.color || '#FFFFFF',
-                                'text-align': m.textAlign
+                                'text-align': m.textAlign,
+                                'text-transform': m.textTransform
                             });
                         }
 
