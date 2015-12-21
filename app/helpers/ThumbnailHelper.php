@@ -72,7 +72,7 @@ class ThumbnailHelper{
      * @return string
      */
     public static function getSiteThumbnailUrl(){
-        return sprintf('//%s/api/facebook/site-thumbnail/%s.png', $_SERVER['SERVER_NAME'], $_SERVER['SERVER_NAME']);
+        return sprintf('%s://%s/api/facebook/site-thumbnail/%s.png', Util::isHttps()?'https':'http', $_SERVER['SERVER_NAME'], $_SERVER['SERVER_NAME']);
     }
 
     /**
@@ -200,7 +200,7 @@ class ThumbnailHelper{
      * @return string
      */
     public static function getPostThumbnailUrl($post){
-        return sprintf('//%s/api/facebook/post-thumbnail/%d.png', $_SERVER['SERVER_NAME'], $post->getId());
+        return sprintf('%s//%s/api/facebook/post-thumbnail/%d.png', Util::isHttps()?'https':'http', $_SERVER['SERVER_NAME'], $post->getId());
 //        return '/api/facebook/post-thumbnail/'.$post->getId().'.png';
     }
 
@@ -274,7 +274,7 @@ class ThumbnailHelper{
      * @return string
      */
     public static function getTaxonomyThumbnailUrl($term){
-        return sprintf('//%s/api/facebook/taxonomy-thumbnail/%s/%s.png', $_SERVER['SERVER_NAME'], $term->getTaxonomy(), $term->getSlug());
+        return sprintf('%s://%s/api/facebook/taxonomy-thumbnail/%s/%s.png', Util::isHttps()?'https':'http', $_SERVER['SERVER_NAME'], $term->getTaxonomy(), $term->getSlug());
 //        return '/api/facebook/taxonomy-thumbnail/'.$term->getTaxonomy().'/'.$term->getSlug().'.png';
     }
 
