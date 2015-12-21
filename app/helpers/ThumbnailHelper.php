@@ -54,7 +54,8 @@ class ThumbnailHelper{
      */
     public static function renderSiteThumbnail(){
         $templates = OptionHelper::getOption('thumbnailTemplates', []);
-
+        Util::print_r($templates);
+        die();
         $template = Util::getItem($templates, 'site');
 
         if(!$template){

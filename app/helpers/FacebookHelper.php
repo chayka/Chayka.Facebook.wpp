@@ -215,7 +215,9 @@ class FacebookHelper {
                 $images[] = ThumbnailHelper::getTaxonomyThumbnailUrl($obj);
                 $images[] = ThumbnailHelper::getSiteThumbnailUrl();
             }
-		}
+		}else{
+            $images[]=ThumbnailHelper::getSiteThumbnailUrl();
+        }
 		if(self::$image){
 			$images[]= self::$image;
 		}
@@ -223,8 +225,6 @@ class FacebookHelper {
 		if($defImg){
 			$images[]= $defImg;
 		}
-
-        $images[]=ThumbnailHelper::getSiteThumbnailUrl();
 
 		return array_unique($images);
 	}
