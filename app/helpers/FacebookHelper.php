@@ -226,7 +226,7 @@ class FacebookHelper {
 			$images[]= $defImg;
 		}
 
-		return array_reverse(array_unique($images));
+		return array_unique($images);
 	}
 
 	/**
