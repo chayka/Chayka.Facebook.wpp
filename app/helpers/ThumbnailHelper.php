@@ -200,7 +200,7 @@ class ThumbnailHelper{
      * @return string
      */
     public static function getPostThumbnailUrl($post){
-        return sprintf('%s//%s/api/facebook/post-thumbnail/%d.png', Util::isHttps()?'https':'http', $_SERVER['SERVER_NAME'], $post->getId());
+        return sprintf('%s://%s/api/facebook/post-thumbnail/%d.png', Util::isHttps()?'https':'http', $_SERVER['SERVER_NAME'], $post->getId());
 //        return '/api/facebook/post-thumbnail/'.$post->getId().'.png';
     }
 
