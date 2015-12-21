@@ -273,7 +273,7 @@ class FacebookHelper {
 		if(self::$url){
 			return self::$url;
 		}
-		return '//'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+		return (Util::isHttps()?'https':'http').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
 	}
 
 	/**
