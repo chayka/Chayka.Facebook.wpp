@@ -239,8 +239,8 @@ class FacebookController extends Controller{
      * Facebook site thumbnail
      */
     public function siteThumbnailAction(){
-        $hash = InputHelper::getParam('hash');
-        $imageFormat = FsHelper::getExtension($hash);
+//        $hash = InputHelper::getParam('hash');
+        $imageFormat = InputHelper::getParam('format', ThumbnailHelper::getDefaultImageFormat());
 
         try{
 
@@ -276,7 +276,7 @@ class FacebookController extends Controller{
     public function taxonomyThumbnailAction(){
         $slug = InputHelper::getParam('term');
         $taxonomy = InputHelper::getParam('taxonomy');
-        $imageFormat = FsHelper::getExtension($slug);
+        $imageFormat = InputHelper::getParam('format', ThumbnailHelper::getDefaultImageFormat());
         $slug = FsHelper::hideExtension($slug);
 
         $term = TermModel::selectBySlug($slug, $taxonomy);
@@ -318,7 +318,7 @@ class FacebookController extends Controller{
      */
     public function postThumbnailAction(){
         $imageId = InputHelper::getParam('image_id');
-        $imageFormat = FsHelper::getExtension($imageId);
+        $imageFormat = InputHelper::getParam('format', ThumbnailHelper::getDefaultImageFormat());
         $postId = FsHelper::hideExtension($imageId);
 
         $post = PostModel::selectById($postId);

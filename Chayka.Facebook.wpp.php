@@ -11,7 +11,7 @@
 
 require_once 'vendor/autoload.php';
 
-if(!class_exists("Chayka\WP\Plugin")){
+if(!class_exists("Chayka\\WP\\Plugin")){
     add_action( 'admin_notices', function () {
 ?>
     <div class="error">
@@ -21,5 +21,5 @@ if(!class_exists("Chayka\WP\Plugin")){
 	});
 }else{
     require_once dirname(__FILE__).'/Plugin.php';
-	add_action('init', array("Chayka\Facebook\\Plugin", "init"));
+	add_action('init', array("Chayka\\Facebook\\Plugin", "init"));
 }

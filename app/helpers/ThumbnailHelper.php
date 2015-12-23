@@ -16,6 +16,11 @@ class ThumbnailHelper{
     protected static $defaultFont = '';
     protected static $defaultLogo = '';
     protected static $defaultBackground = '';
+    protected static $defaultFormat = 'jpg';
+
+    public static function getDefaultImageFormat(){
+        return self::$defaultFormat;
+    }
 
     /**
      * Get saved templates
@@ -110,9 +115,10 @@ class ThumbnailHelper{
      */
     public static function getSiteThumbnailUrl(){
         $data = self::getSiteThumbnailData();
-        return sprintf('%s://%s/api/facebook/site-thumbnail/%s/',
+        return sprintf('%s://%s/api/facebook/site-thumbnail/%s/%s/',
             Util::isHttps()?'https':'http',
             $_SERVER['SERVER_NAME'],
+            self::$defaultFormat,
             $data?self::getThumbnailHash($data['template'], $data['blocks']):$_SERVER['SERVER_NAME']);
     }
 
@@ -261,10 +267,11 @@ class ThumbnailHelper{
      */
     public static function getPostThumbnailUrl($post){
         $data = self::getPostThumbnailData($post);
-        return sprintf('%s://%s/api/facebook/post-thumbnail/%d/%s',
+        return sprintf('%s://%s/api/facebook/post-thumbnail/%d/%s/%s',
             Util::isHttps()?'https':'http',
             $_SERVER['SERVER_NAME'],
             $post->getId(),
+            self::$defaultFormat,
             $data?self::getThumbnailHash($data['template'], $data['blocks']):''
         );
 //        return '/api/facebook/post-thumbnail/'.$post->getId().'.png';
@@ -360,11 +367,12 @@ class ThumbnailHelper{
      */
     public static function getTaxonomyThumbnailUrl($term){
         $data = self::getTaxonomyThumbnailData($term);
-        return sprintf('%s://%s/api/facebook/taxonomy-thumbnail/%s/%s/%s',
+        return sprintf('%s://%s/api/facebook/taxonomy-thumbnail/%s/%s/%s/%s',
             Util::isHttps()?'https':'http',
             $_SERVER['SERVER_NAME'],
             $term->getTaxonomy(),
             $term->getSlug(),
+            self::$defaultFormat,
             $data?self::getThumbnailHash($data['template'], $data['blocks']):'');
 //        return '/api/facebook/taxonomy-thumbnail/'.$term->getTaxonomy().'/'.$term->getSlug().'.png';
     }
