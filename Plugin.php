@@ -103,9 +103,9 @@ class Plugin extends WP\Plugin{
      */
     public function registerRoutes() {
         $this->addRoute('default');
-        $this->addRoute('site-thumbnail', 'facebook/site-thumbnail/:image', ['controller' => 'facebook', 'action'=>'site-thumbnail']);
-        $this->addRoute('taxonomy-thumbnail', 'facebook/taxonomy-thumbnail/:taxonomy/:term', ['controller' => 'facebook', 'action'=>'taxonomy-thumbnail']);
-        $this->addRoute('post-thumbnail', 'facebook/post-thumbnail/:image_id', ['controller' => 'facebook', 'action'=>'post-thumbnail']);
+        $this->addRoute('site-thumbnail', 'facebook/site-thumbnail/:hash', ['controller' => 'facebook', 'action'=>'site-thumbnail']);
+        $this->addRoute('taxonomy-thumbnail', 'facebook/taxonomy-thumbnail/:taxonomy/:term/:hash', ['controller' => 'facebook', 'action'=>'taxonomy-thumbnail']);
+        $this->addRoute('post-thumbnail', 'facebook/post-thumbnail/:image_id/:hash', ['controller' => 'facebook', 'action'=>'post-thumbnail']);
     }
 
     /**

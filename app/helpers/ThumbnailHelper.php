@@ -3,6 +3,7 @@
 namespace Chayka\Facebook;
 
 use Chayka\Helpers\FsHelper;
+use Chayka\Helpers\JsonHelper;
 use Chayka\Helpers\Util;
 use Chayka\WP\Models\PostModel;
 use Chayka\WP\Models\TermModel;
@@ -23,6 +24,29 @@ class ThumbnailHelper{
      */
     public static function getTemplates(){
         return OptionHelper::getOption('thumbnailTemplates');
+    }
+
+    /**
+     * Get unique hash for the thumbnail to render
+     *
+     * @param array $template
+     * @param array $blocks
+     *
+     * @return string
+     */
+    public static function getThumbnailHash($template, $blocks){
+        self::$defaultFont = OptionHelper::getOption('thumbnailDefaultFont');
+        self::$defaultLogo = OptionHelper::getOption('thumbnailDefaultLogo');
+        self::$defaultBackground = OptionHelper::getOption('thumbnailDefaultBackground');
+        $unique = join("\n", [
+            self::$defaultFont,
+            self::$defaultLogo,
+            self::$defaultBackground,
+            JsonHelper::encode($template),
+            JsonHelper::encode($blocks),
+        ]);
+
+        return sprintf('%x',crc32($unique));
     }
 
     /**
@@ -48,11 +72,11 @@ class ThumbnailHelper{
     }
 
     /**
-     * Render site thumbnail
+     * Get data to render site thumbnail
      *
-     * @return bool|resource
+     * @return array|bool
      */
-    public static function renderSiteThumbnail(){
+    public static function getSiteThumbnailData(){
         $templates = OptionHelper::getOption('thumbnailTemplates', []);
 
         $template = Util::getItem($templates, 'site');
@@ -63,7 +87,20 @@ class ThumbnailHelper{
 
         $blocks = self::getSiteTextBlocks();
 
-        return self::renderThumbnail($template, $blocks);
+        return [
+            'template' => $template,
+            'blocks' => $blocks
+        ];
+    }
+
+    /**
+     * Render site thumbnail
+     *
+     * @return bool|resource
+     */
+    public static function renderSiteThumbnail(){
+        $data = self::getSiteThumbnailData();
+        return $data ? self::renderThumbnail($data['template'], $data['blocks']):false;
     }
 
     /**
@@ -72,7 +109,11 @@ class ThumbnailHelper{
      * @return string
      */
     public static function getSiteThumbnailUrl(){
-        return sprintf('%s://%s/api/facebook/site-thumbnail/%s', Util::isHttps()?'https':'http', $_SERVER['SERVER_NAME'], $_SERVER['SERVER_NAME']);
+        $data = self::getSiteThumbnailData();
+        return sprintf('%s://%s/api/facebook/site-thumbnail/%s/',
+            Util::isHttps()?'https':'http',
+            $_SERVER['SERVER_NAME'],
+            $data?self::getThumbnailHash($data['template'], $data['blocks']):$_SERVER['SERVER_NAME']);
     }
 
     /**
@@ -155,16 +196,21 @@ class ThumbnailHelper{
     }
 
     /**
-     * Render post specific thumbnail
+     * Get data to render post template
      *
      * @param PostModel $post
-     * @param $layout
+     * @param string $layout
      *
-     * @return bool|resource
+     * @return array|bool
      */
-    public static function renderPostThumbnail($post, $layout = ''){
+    public static function getPostThumbnailData($post, $layout=''){
         if(!$layout){
             $layout = $post->getMeta('fb_thumbnail_layout');
+        }
+        $templates = OptionHelper::getOption('thumbnailTemplates', []);
+        $postTemplates = Util::getItem($templates, 'post', []);
+        if(!$layout){
+            $layout = key($postTemplates);
         }
         $template = null;
         switch($layout){
@@ -177,8 +223,6 @@ class ThumbnailHelper{
                 }
                 break;
             default:
-                $templates = OptionHelper::getOption('thumbnailTemplates', []);
-                $postTemplates = Util::getItem($templates, 'post', []);
                 $template = Util::getItem($postTemplates, $layout);
         }
         if(!$template){
@@ -189,7 +233,23 @@ class ThumbnailHelper{
 
         $blocks = array_merge(self::getSiteTextBlocks(), self::getPostTextBlocks($post));
 
-        return self::renderThumbnail($template, $blocks);
+        return [
+            'template' => $template,
+            'blocks' => $blocks
+        ];
+    }
+
+    /**
+     * Render post specific thumbnail
+     *
+     * @param PostModel $post
+     * @param $layout
+     *
+     * @return bool|resource
+     */
+    public static function renderPostThumbnail($post, $layout = ''){
+        $data = self::getPostThumbnailData($post, $layout);
+        return $data ? self::renderThumbnail($data['template'], $data['blocks']):false;
     }
 
     /**
@@ -200,7 +260,13 @@ class ThumbnailHelper{
      * @return string
      */
     public static function getPostThumbnailUrl($post){
-        return sprintf('%s://%s/api/facebook/post-thumbnail/%d', Util::isHttps()?'https':'http', $_SERVER['SERVER_NAME'], $post->getId());
+        $data = self::getPostThumbnailData($post);
+        return sprintf('%s://%s/api/facebook/post-thumbnail/%d/%s',
+            Util::isHttps()?'https':'http',
+            $_SERVER['SERVER_NAME'],
+            $post->getId(),
+            $data?self::getThumbnailHash($data['template'], $data['blocks']):''
+        );
 //        return '/api/facebook/post-thumbnail/'.$post->getId().'.png';
     }
 
@@ -246,16 +312,21 @@ class ThumbnailHelper{
     }
 
     /**
+     * Get data to render taxonomy thumbnail
+     *
      * @param TermModel $term
      * @param string $layout
      *
-     * @return bool|resource
+     * @return array|bool
      */
-    public static function renderTaxonomyThumbnail($term, $layout){
+    public static function getTaxonomyThumbnailData($term, $layout = ''){
         $templates = OptionHelper::getOption('thumbnailTemplates', []);
 
-        $postTemplates = Util::getItem($templates, 'taxonomy');
-        $template = Util::getItem($postTemplates, $layout);
+        $taxonomyTemplates = Util::getItem($templates, 'taxonomy');
+        if(!$layout){
+            $layout = key($taxonomyTemplates);
+        }
+        $template = Util::getItem($taxonomyTemplates, $layout);
         if(!$template){
             return false;
         }
@@ -263,7 +334,21 @@ class ThumbnailHelper{
 
         $blocks = array_merge(self::getSiteTextBlocks(), self::getTaxonomyTextBlocks($term));
 
-        return self::renderThumbnail($template, $blocks);
+        return [
+            'template' => $template,
+            'blocks' => $blocks
+        ];
+    }
+
+    /**
+     * @param TermModel $term
+     * @param string $layout
+     *
+     * @return bool|resource
+     */
+    public static function renderTaxonomyThumbnail($term, $layout = ''){
+        $data = self::getTaxonomyThumbnailData($term, $layout);
+        return $data?self::renderThumbnail($data['template'], $data['blocks']):false;
     }
 
     /**
@@ -274,7 +359,13 @@ class ThumbnailHelper{
      * @return string
      */
     public static function getTaxonomyThumbnailUrl($term){
-        return sprintf('%s://%s/api/facebook/taxonomy-thumbnail/%s/%s', Util::isHttps()?'https':'http', $_SERVER['SERVER_NAME'], $term->getTaxonomy(), $term->getSlug());
+        $data = self::getTaxonomyThumbnailData($term);
+        return sprintf('%s://%s/api/facebook/taxonomy-thumbnail/%s/%s/%s',
+            Util::isHttps()?'https':'http',
+            $_SERVER['SERVER_NAME'],
+            $term->getTaxonomy(),
+            $term->getSlug(),
+            $data?self::getThumbnailHash($data['template'], $data['blocks']):'');
 //        return '/api/facebook/taxonomy-thumbnail/'.$term->getTaxonomy().'/'.$term->getSlug().'.png';
     }
 
