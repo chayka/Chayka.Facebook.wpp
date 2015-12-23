@@ -79,25 +79,28 @@
 
     & > .thumbnail_preview{
         float: left;
-        width: 600px;
+        //width: 600px;
         padding-right: 10px;
 
         & > .thumbnail_canvas{
-            width: 600px;
-            height: 315px;
+            //width: 600px;
+            //height: 315px;
+            //width: 100%;
+            //height: 100%;
             background-color: black;
             background-size: cover;
             position: relative;
             overflow: hidden;
 
             & > .preview_background{
-                width: 600px;
-                height: 315px;
+
                 background-size: cover;
                 background-position: center top;
                 position: absolute;
                 top: 0;
                 left: 0;
+                right: 0;
+                bottom: 0;
                 z-index: 1;
                 cursor: pointer;
             }

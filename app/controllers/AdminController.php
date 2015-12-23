@@ -287,6 +287,9 @@ class AdminController extends Controller{
         $this->view->assign('defaultPostThumbnail', $defaultPostThumbnail);
         $this->view->assign('defaultTaxonomyThumbnail', $defaultTaxonomyThumbnail);
 
+        $this->view->assign('thumbnailWidth', ThumbnailHelper::THUMBNAIL_WIDTH);
+        $this->view->assign('thumbnailHeight', ThumbnailHelper::THUMBNAIL_HEIGHT);
+
         $this->view->assign('templates', $templates);
 
         $this->view->assign('blocks', $blocks);

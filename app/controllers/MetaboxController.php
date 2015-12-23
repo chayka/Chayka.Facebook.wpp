@@ -68,6 +68,9 @@ class MetaboxController extends Controller{
         $this->view->assign('defaultLogo', OptionHelper::getOption('thumbnailDefaultLogo'));
         $this->view->assign('defaultBackground', $tb?$tb['url']:OptionHelper::getOption('thumbnailDefaultBackground'));
 
+        $this->view->assign('thumbnailWidth', ThumbnailHelper::THUMBNAIL_WIDTH);
+        $this->view->assign('thumbnailHeight', ThumbnailHelper::THUMBNAIL_HEIGHT);
+
         $templates = OptionHelper::getOption('thumbnailTemplates');
         $postTemplates = empty($templates)?null:$templates['post'];
         $this->view->assign('templates', $postTemplates);

@@ -7,7 +7,7 @@
             <div class="tab block" data-ng-repeat="(id, block) in blocks" data-ng-class="{active: isTabActive(id)}" data-ng-show="isTabVisible(id)" data-ng-click="activateTab(id)">{{block.title | nls}}</div>
             <div class="tab add_tab dashicons-before dashicons-plus" data-ng-click="addBlockClicked()"></div>
         </div>
-        <div class="thumbnail_canvas">
+        <div class="thumbnail_canvas" data-ng-style="{'width': thumbnailWidth + 'px', 'height': thumbnailHeight + 'px'}">
             <div class="preview_background" data-ng-style="getBlockStyle('background')" data-ng-click="activateTab('background')"></div>
             <div class="preview_fade" data-ng-style="getBlockStyle('fade')" data-ng-click="activateTab('fade')" data-ng-dblclick="activateTab('background')"></div>
             <img class="preview_logo" data-ng-show="!!getModelImageUrl(model.logo, defaultLogo)" data-ng-src="{{getModelImageUrl(model.logo, defaultLogo)}}" data-ng-style="getBlockStyle('logo')" data-ng-click="activateTab('logo')" >
@@ -19,7 +19,7 @@
     <div class="thumbnail_editor" data-ng-hide="'preview' === mode">
         <div class="forms">
             <div class="form background" data-ng-show="'background'===tab">
-                <div data-facebook-thumbnail-block-control="blockControls.background" data-model="model.background" data-block="preview_background" data-title="Background" data-tabs="image" data-image-hint="Recommended: 1200 x 630px, min: 600 x 315px" data-default-image="defaultBackground"></div>
+                <div data-facebook-thumbnail-block-control="blockControls.background" data-model="model.background" data-block="preview_background" data-title="Background" data-tabs="image" data-image-hint="Recommended: {{thumbnailWidth * 2}} x {{thumbnailHeight * 2}}px, min: {{thumbnailWidth}} x {{thumbnailHeight}}px" data-default-image="defaultBackground"></div>
             </div>
             <div class="form logo" data-ng-show="'logo'===tab">
                 <div data-facebook-thumbnail-block-control="blockControls.logo" data-model="model.logo" data-block="preview_logo" data-title="Logo" data-tabs="image position" data-optional="true" data-image-hint="Recommended: 24bit png with opacity support" data-default-image="defaultLogo"></div>

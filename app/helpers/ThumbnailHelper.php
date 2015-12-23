@@ -10,8 +10,8 @@ use Chayka\WP\Models\TermModel;
 use Chayka\WP\Queries\TermQuery;
 
 class ThumbnailHelper{
-    const THUMBNAIL_WIDTH = 1200;
-    const THUMBNAIL_HEIGHT = 630;
+    const THUMBNAIL_WIDTH = 600;
+    const THUMBNAIL_HEIGHT = 360;
 
     protected static $defaultFont = '';
     protected static $defaultLogo = '';
@@ -118,6 +118,8 @@ class ThumbnailHelper{
         self::$defaultLogo = OptionHelper::getOption('thumbnailDefaultLogo');
         self::$defaultBackground = OptionHelper::getOption('thumbnailDefaultBackground');
         $unique = join("\n", [
+            self::THUMBNAIL_WIDTH,
+            self::THUMBNAIL_HEIGHT,
             self::$defaultFont,
             self::$defaultLogo,
             self::$defaultBackground,
@@ -500,8 +502,8 @@ class ThumbnailHelper{
     public static function renderThumbnail($template, $blocks){
         FontHelper::init();
 
-        $thumbnailWidth = self::THUMBNAIL_WIDTH;
-        $thumbnailHeight = self::THUMBNAIL_HEIGHT;
+        $thumbnailWidth = self::THUMBNAIL_WIDTH * 2;
+        $thumbnailHeight = self::THUMBNAIL_HEIGHT * 2;
 
         self::$defaultFont = OptionHelper::getOption('thumbnailDefaultFont');
         self::$defaultLogo = OptionHelper::getOption('thumbnailDefaultLogo');
@@ -566,7 +568,7 @@ class ThumbnailHelper{
             imagesavealpha ( $logo, true );
             $width = Util::getItem($template['logo'], 'width', 0);
             $unitWidth = Util::getItem($template['logo'], 'unitWidth', 'px');
-            $width = '%' === $unitWidth ? $width / 100 * self::THUMBNAIL_WIDTH : $width * 2;
+            $width = '%' === $unitWidth ? $width / 100 * self::THUMBNAIL_WIDTH * 2 : $width * 2;
             $logoRatio = $width / imagesx($logo);
             $height = imagesy($logo) * $logoRatio;
             $template['logo']['height'] = $height / 2;
@@ -771,19 +773,19 @@ class ThumbnailHelper{
     protected static function getBlockXY($block){
         $x = Util::getItem($block, 'x', 0);
         $unitX = Util::getItem($block, 'unitX', 'px');
-        $x = '%' === $unitX ? $x / 100 * self::THUMBNAIL_WIDTH : $x * 2;
+        $x = '%' === $unitX ? $x / 100 * self::THUMBNAIL_WIDTH * 2 : $x * 2;
 
         $y = Util::getItem($block, 'y', 0);
         $unitY = Util::getItem($block, 'unitY', 'px');
-        $y = '%' === $unitY ? $y / 100 * self::THUMBNAIL_HEIGHT : $y * 2;
+        $y = '%' === $unitY ? $y / 100 * self::THUMBNAIL_HEIGHT * 2 : $y * 2;
 
         $width = Util::getItem($block, 'width', 0);
         $unitWidth = Util::getItem($block, 'unitWidth', 'px');
-        $width = '%' === $unitWidth ? $width / 100 * self::THUMBNAIL_WIDTH : $width * 2;
+        $width = '%' === $unitWidth ? $width / 100 * self::THUMBNAIL_WIDTH * 2 : $width * 2;
 
         $height = Util::getItem($block, 'height', 0);
         $unitHeight = Util::getItem($block, 'unitHeight', 'px');
-        $height = '%' === $unitHeight ? $height / 100 * self::THUMBNAIL_HEIGHT : $height * 2;
+        $height = '%' === $unitHeight ? $height / 100 * self::THUMBNAIL_HEIGHT * 2 : $height * 2;
 
         $anchor = Util::getItem($block, 'anchor', 'left-top');
 
@@ -834,11 +836,11 @@ class ThumbnailHelper{
     public static function renderBlock($image, $params = []){
         $width = Util::getItem($params, 'width', 300);
         $unitWidth = Util::getItem($params, 'unitWidth', 'px');
-        $width = '%' === $unitWidth ? $width / 100 * self::THUMBNAIL_WIDTH : $width * 2;
+        $width = '%' === $unitWidth ? $width / 100 * self::THUMBNAIL_WIDTH * 2 : $width * 2;
 
         $height = Util::getItem($params, 'height', 160);
         $unitHeight = Util::getItem($params, 'unitHeight', 'px');
-        $height = '%' === $unitHeight ? $height / 100 * self::THUMBNAIL_HEIGHT : $height * 2;
+        $height = '%' === $unitHeight ? $height / 100 * self::THUMBNAIL_HEIGHT * 2 : $height * 2;
 
         $hashBgColor = Util::getItem($params, 'backgroundColor', '#000');
         $bgOpacity = Util::getItem($params, 'backgroundOpacity', 0);
@@ -926,7 +928,7 @@ class ThumbnailHelper{
         }
         $width = Util::getItem($params, 'width', 600);
         $unitWidth = Util::getItem($params, 'unitWidth', 'px');
-        $width = '%' === $unitWidth ? $width / 100 * self::THUMBNAIL_WIDTH : $width * 2;
+        $width = '%' === $unitWidth ? $width / 100 * self::THUMBNAIL_WIDTH * 2 : $width * 2;
 
         $textAlign = Util::getItem($params, 'textAlign', 'left');
 

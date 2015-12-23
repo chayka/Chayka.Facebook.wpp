@@ -14,7 +14,9 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                 defaultBackground: '=?',
                 defaultLogo: '=?',
                 postId: '@?',
-                mode: '=?'
+                mode: '=?',
+                thumbnailWidth: '=?',
+                thumbnailHeight: '=?'
             },
 
             controller: ['$scope', '$element', '$timeout', function($scope, $element, $timeout){
@@ -27,6 +29,9 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                     tab: 'background',
 
                     modalTabPicker: null,
+
+                    thumbnailWidth: $scope.thumbnailWidth || 600,
+                    thumbnailHeight: $scope.thumbnailHeight || 315,
 
                     init: function(){
                         $scope.initModel();
@@ -246,7 +251,7 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                 text: '=?',
                 fonts: '=?',
                 defaultImage: '=?',
-                defaultFont: '=?'
+                defaultFont: '=?',
             },
             controller: ['$scope', function($scope){
                 angular.extend($scope, {
