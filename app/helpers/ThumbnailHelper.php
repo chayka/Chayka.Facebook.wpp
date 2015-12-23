@@ -17,9 +17,83 @@ class ThumbnailHelper{
     protected static $defaultLogo = '';
     protected static $defaultBackground = '';
     protected static $defaultFormat = 'jpg';
+    protected static $cacheDir = '';
 
+    /**
+     * Get default image format
+     *
+     * @return string
+     */
     public static function getDefaultImageFormat(){
         return self::$defaultFormat;
+    }
+
+    /**
+     * Get cache dir
+     *
+     * @return string
+     */
+    public static function getCacheDir(){
+        if(!self::$cacheDir){
+            $app = Plugin::getInstance();
+            $cacheDir = $app->getInstance()->getBasePath().Plugin::CACHE_DIR;
+            if(!is_dir($cacheDir)){
+                mkdir($cacheDir);
+            }
+            self::$cacheDir = Plugin::CACHE_DIR;
+        }
+
+        return self::$cacheDir;
+    }
+
+    /**
+     * Get cached image path
+     *
+     * @param $filename
+     *
+     * @return string
+     */
+    public static function getCachedImagePath($filename = ''){
+        $app = Plugin::getInstance();
+        $cacheDir = $app->getInstance()->getBasePath().self::getCacheDir();
+        return $cacheDir.'/'.$filename;
+    }
+
+    /**
+     * Get cached image url
+     *
+     * @param $filename
+     *
+     * @return string
+     */
+    public static function getCachedImageUrl($filename = ''){
+        $app = Plugin::getInstance();
+        $cacheDir = $app->getInstance()->getBaseUrl().self::getCacheDir();
+        return $cacheDir.'/'.$filename;
+    }
+
+    /**
+     * Checks if cached file exists, removes old cache based on mask
+     *
+     * @param $filename
+     * @param $mask
+     *
+     * @return bool
+     */
+    public static function validateCachedImage($filename, $mask){
+        $found = false;
+        $fullFilename = self::getCachedImagePath($filename);
+        $fullMask = self::getCachedImagePath($mask);
+        $files = glob($fullMask);
+        foreach($files as $file){
+            if($fullFilename === $file){
+                $found = true;
+            }else{
+                unlink($file);
+            }
+        }
+
+        return $found;
     }
 
     /**
@@ -115,11 +189,25 @@ class ThumbnailHelper{
      */
     public static function getSiteThumbnailUrl(){
         $data = self::getSiteThumbnailData();
+
+        if($data){
+            $hash = self::getThumbnailHash($data['template'], $data['blocks']);
+
+            $imageFn = 'site.'.$hash.'.'.self::getDefaultImageFormat();
+
+            if(!self::validateCachedImage($imageFn, 'site.*')){
+                $image = self::renderThumbnail($data['template'], $data['blocks']);
+                self::writeImage($image, self::getCachedImagePath($imageFn));
+            }
+
+            return self::getCachedImageUrl($imageFn);
+        }
+
         return sprintf('%s://%s/api/facebook/site-thumbnail/%s/%s/',
             Util::isHttps()?'https':'http',
             $_SERVER['SERVER_NAME'],
             self::$defaultFormat,
-            $data?self::getThumbnailHash($data['template'], $data['blocks']):$_SERVER['SERVER_NAME']);
+            $_SERVER['SERVER_NAME']);
     }
 
     /**
@@ -267,12 +355,24 @@ class ThumbnailHelper{
      */
     public static function getPostThumbnailUrl($post){
         $data = self::getPostThumbnailData($post);
+        if($data){
+            $hash = self::getThumbnailHash($data['template'], $data['blocks']);
+
+            $imageFn = 'post.'.$post->getId().'.'.$hash.'.'.self::getDefaultImageFormat();
+
+            if(!self::validateCachedImage($imageFn, 'post.'.$post->getId().'.*')){
+                $image = self::renderThumbnail($data['template'], $data['blocks']);
+                self::writeImage($image, self::getCachedImagePath($imageFn));
+            }
+
+            return self::getCachedImageUrl($imageFn);
+        }
         return sprintf('%s://%s/api/facebook/post-thumbnail/%d/%s/%s',
             Util::isHttps()?'https':'http',
             $_SERVER['SERVER_NAME'],
             $post->getId(),
             self::$defaultFormat,
-            $data?self::getThumbnailHash($data['template'], $data['blocks']):''
+            ''
         );
 //        return '/api/facebook/post-thumbnail/'.$post->getId().'.png';
     }
@@ -367,6 +467,18 @@ class ThumbnailHelper{
      */
     public static function getTaxonomyThumbnailUrl($term){
         $data = self::getTaxonomyThumbnailData($term);
+        if($data){
+            $hash = self::getThumbnailHash($data['template'], $data['blocks']);
+
+            $imageFn = 'term.'.$term->getSlug().'.'.$hash.'.'.self::getDefaultImageFormat();
+
+            if(!self::validateCachedImage($imageFn, 'term.'.$term->getSlug().'.*')){
+                $image = self::renderThumbnail($data['template'], $data['blocks']);
+                self::writeImage($image, self::getCachedImagePath($imageFn));
+            }
+
+            return self::getCachedImageUrl($imageFn);
+        }
         return sprintf('%s://%s/api/facebook/taxonomy-thumbnail/%s/%s/%s/%s',
             Util::isHttps()?'https':'http',
             $_SERVER['SERVER_NAME'],
@@ -511,6 +623,33 @@ class ThumbnailHelper{
         }
 
         return $im;
+    }
+
+    /**
+     * Write image to specified path
+     *
+     * @param $image
+     * @param $filename
+     *
+     * @return bool|null
+     */
+    protected static function writeImage($image, $filename){
+        $format = strtolower(FsHelper::getExtension($filename));
+
+        $res = null;
+        switch($format){
+            case 'jpg':
+                $res = imagejpeg($image, $filename);
+                break;
+            case 'gif':
+                $res = imagegif($image, $filename);
+                break;
+            case 'png':
+                $res = imagepng($image, $filename);
+                break;
+        }
+
+        return $res;
     }
 
     /**

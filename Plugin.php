@@ -17,6 +17,7 @@ class Plugin extends WP\Plugin{
     public static $instance = null;
 
     const FONTS_DIR = 'res/fonts';
+    const CACHE_DIR = 'res/thumbnails';
 
     public static function init(){
         if(!static::$instance){

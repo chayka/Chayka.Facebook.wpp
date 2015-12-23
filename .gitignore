@@ -9,3 +9,4 @@ composer.lock
 composer.phar
 data/
 res/fonts/
+res/thumbnails/
