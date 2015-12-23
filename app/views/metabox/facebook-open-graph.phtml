@@ -2,7 +2,10 @@
 <div class="metabox" data-ng-cloak data-ng-controller="metabox">
 	<div data-form-validator="validator">
         <?php /* fb_title */
-            $name      = 'metabox-fb_title';
+        use Chayka\Facebook\ThumbnailHelper;
+        use Chayka\Helpers\Util;
+
+        $name      = 'metabox-fb_title';
             $value = $this->post->getMeta('fb_title');
         ?>
 		<div class="form_field fullsize fb_title" data-form-field="fb_title">
@@ -30,6 +33,14 @@
         <?php /* fb_thumbnail */
         wp_enqueue_media();
         $thumbnailLayout = $this->post->getMeta('fb_thumbnail_layout');
+        $templates = ThumbnailHelper::getTemplates();
+
+        if(!$thumbnailLayout && $templates){
+            $postTemplates = Util::getItem($templates, 'post', []);
+            if($postTemplates){
+                $thumbnailLayout = key($postTemplates);
+            }
+        }
         if(!$thumbnailLayout){
             $thumbnailLayout = 'featured';
         }
