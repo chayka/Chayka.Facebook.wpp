@@ -362,7 +362,28 @@ class ThumbnailHelper{
      * @return string
      */
     public static function getPostThumbnailUrl($post){
-        $data = self::getPostThumbnailData($post);
+        $layout = $post->getMeta('fb_thumbnail_layout');
+
+        $tb = $post->getThumbnailData_Full();
+
+        $templates = ThumbnailHelper::getTemplates();
+
+        if(!$layout && $templates){
+            $postTemplates = Util::getItem($templates, 'post', []);
+            if($postTemplates){
+                $layout = key($postTemplates);
+            }
+        }
+
+        if(!$layout || 'featured' === $layout){
+            if($tb){
+                return $tb['url'];
+            }else{
+                return false;
+            }
+        }
+
+        $data = self::getPostThumbnailData($post, $layout);
         if($data){
             $hash = self::getThumbnailHash($data['template'], $data['blocks']);
 

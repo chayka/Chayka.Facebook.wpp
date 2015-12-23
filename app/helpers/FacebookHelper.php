@@ -193,8 +193,8 @@ class FacebookHelper {
 		if($obj){
             if($obj instanceof PostModel){
 	            if(ThumbnailHelper::isSetUp()){
-		            $images[] = ThumbnailHelper::getPostThumbnailUrl($obj);
-		            $images[] = ThumbnailHelper::getSiteThumbnailUrl();
+                    $postTb = ThumbnailHelper::getPostThumbnailUrl($obj);
+		            $images[] = $postTb?$postTb:ThumbnailHelper::getSiteThumbnailUrl();
 	            }else{
 		            $attachments = $obj->getAttachments('image');
 		            $thumbId     = $obj->getThumbnailId();

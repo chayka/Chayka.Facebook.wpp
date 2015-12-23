@@ -268,6 +268,7 @@ class FacebookController extends Controller{
         }catch (\Exception $e){
             JsonHelper::respondException($e);
         }
+        return false;
     }
 
     /**
@@ -311,6 +312,8 @@ class FacebookController extends Controller{
         }catch (\Exception $e){
             JsonHelper::respondException($e);
         }
+
+        return false;
     }
 
     /**
@@ -378,6 +381,8 @@ class FacebookController extends Controller{
         }catch (\Exception $e){
             JsonHelper::respondException($e);
         }
+        return false;
     }
+
 
 }
