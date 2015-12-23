@@ -11,7 +11,7 @@ use Chayka\WP\Queries\TermQuery;
 
 class ThumbnailHelper{
     const THUMBNAIL_WIDTH = 600;
-    const THUMBNAIL_HEIGHT = 360;
+    const THUMBNAIL_HEIGHT = 315;
 
     protected static $defaultFont = '';
     protected static $defaultLogo = '';
