@@ -5,7 +5,7 @@
 <?php endif; if($this->url):?>
 	<meta property="og:url" content="<?php echo $this->escape($this->url);?>"/>
 <?php endif; if($this->images): foreach($this->images as $image):?>
-	<meta property="og:image<?php if(\Chayka\Helpers\Util::isHttps()):?>:secure_url<?php endif;?>" content="<?php echo preg_replace_callback('/[А-Яа-я]+/u', create_function('$matches', 'return urlencode($matches[0]);'), $image);?>"/>
+	<meta property="og:image" content="<?php echo preg_replace_callback('/[А-Яа-я]+/u', create_function('$matches', 'return urlencode($matches[0]);'), $image);?>"/>
 <?php endforeach; endif; if($this->type):?>
 	<meta property="og:type" content="<?php echo $this->escape($this->type);?>"/>
 <?php endif; if($this->author):?>
