@@ -19,6 +19,12 @@ class ThumbnailHelper{
     protected static $defaultFormat = 'jpg';
     protected static $cacheDir = '';
 
+    public static function isSetUp(){
+        return OptionHelper::getOption('thumbnailTemplates') &&
+               OptionHelper::getOption('thumbnailDefaultFont') &&
+               is_dir(self::getCachedImagePath());
+    }
+
     /**
      * Get default image format
      *

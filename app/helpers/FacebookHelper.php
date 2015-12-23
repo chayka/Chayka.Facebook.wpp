@@ -192,31 +192,37 @@ class FacebookHelper {
 		$images = array();
 		if($obj){
             if($obj instanceof PostModel){
-                $images[] = ThumbnailHelper::getPostThumbnailUrl($obj);
-                $images[] = ThumbnailHelper::getSiteThumbnailUrl();
+	            if(ThumbnailHelper::isSetUp()){
+		            $images[] = ThumbnailHelper::getPostThumbnailUrl($obj);
+		            $images[] = ThumbnailHelper::getSiteThumbnailUrl();
+	            }else{
+		            $attachments = $obj->getAttachments('image');
+		            $thumbId     = $obj->getThumbnailId();
 
-                $attachments = $obj->getAttachments('image');
-                $thumbId     = $obj->getThumbnailId();
-
-                /**
-                 * @var Models\PostModel $attachment
-                 */
-                if($thumbId && isset($attachments[$thumbId])){
-                    $attachment = $attachments[$thumbId];
-                    $data = $attachment->loadImageData('full');
-                    $images[]= Util::getItem($data, 'url');
-                    unset($attachments[$thumbId]);
-                }
-                foreach ($attachments as $attachment){
-                    $data = $attachment->loadImageData('full');
-                    $images[]= Util::getItem($data, 'url');
-                }
+		            /**
+		             * @var Models\PostModel $attachment
+		             */
+		            if($thumbId && isset($attachments[$thumbId])){
+			            $attachment = $attachments[$thumbId];
+			            $data = $attachment->loadImageData('full');
+			            $images[]= Util::getItem($data, 'url');
+			            unset($attachments[$thumbId]);
+		            }
+		            foreach ($attachments as $attachment){
+			            $data = $attachment->loadImageData('full');
+			            $images[]= Util::getItem($data, 'url');
+		            }
+	            }
             }else if($obj instanceof TermModel){
-                $images[] = ThumbnailHelper::getTaxonomyThumbnailUrl($obj);
-                $images[] = ThumbnailHelper::getSiteThumbnailUrl();
+	            if(ThumbnailHelper::isSetUp()){
+		            $images[] = ThumbnailHelper::getTaxonomyThumbnailUrl($obj);
+		            $images[] = ThumbnailHelper::getSiteThumbnailUrl();
+	            }
             }
 		}else{
-            $images[]=ThumbnailHelper::getSiteThumbnailUrl();
+			if(ThumbnailHelper::isSetUp()){
+				$images[] = ThumbnailHelper::getSiteThumbnailUrl();
+			}
         }
 		if(self::$image){
 			$images[]= self::$image;
