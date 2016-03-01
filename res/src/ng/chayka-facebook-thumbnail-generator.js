@@ -44,7 +44,7 @@ angular.module('chayka-facebook-thumbnail-generator', ['chayka-forms', 'chayka-n
                     },
 
                     initModel: function(){
-                        utils.setObjectDefaults($scope.model, {
+                        $scope.model = utils.setObjectDefaults($scope.model, {
                             background: {
                                 url: ''
                             },
