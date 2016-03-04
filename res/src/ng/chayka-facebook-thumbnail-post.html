@@ -12,14 +12,14 @@
         <p>Meanwhile default image will be used as thumbnail.</p>
         <img data-ng-src="{{defaultBackground}}" data-ng-show="!!defaultBackground" src=""/>
     </div>
-    <div class="thumbnail_setup">
+    <div class="thumbnail_setup" data-ng-init="template = getTemplate();">
         <div class="layout_picker">
             <label>Select layout:</label>
             <select data-ng-model="layout" data-ng-options="id as title for (id, title) in getLayoutOptions()" title="Layout"></select>
             <div class="button button-primary btn_customize" data-ng-click="customizeTemplateClicked()" data-ng-show="layout !== 'featured' && layout !== 'custom'">{{'Customize' | nls}}</div>
         </div>
         <img data-ng-src="{{defaultBackground}}" data-ng-show="!!defaultBackground && layout==='featured'" src=""/>
-        <div data-facebook-thumbnail-generator data-model="getTemplate()" data-blocks="blocks" data-fonts="fonts"
+        <div data-facebook-thumbnail-generator data-model="template" data-blocks="blocks" data-fonts="fonts"
              data-default-font="defaultFont" data-default-background="defaultBackground" data-default-logo="defaultLogo"
              data-mode="'custom' === layout ? '' : 'preview'" data-ng-show="layout !== 'featured'"
              data-thumbnail-width="thumbnailWidth" data-thumbnail-height="thumbnailHeight"></div>
