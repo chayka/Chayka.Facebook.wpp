@@ -121,18 +121,18 @@ class Plugin extends WP\Plugin{
     }
     
     /**
-     * Add custom metaboxes here via addMetaBox() calls;
+     * Add custom metaboxes here via addMetabox() calls;
      */
-    public function registerMetaBoxes(){
-        $this->addMetaBox('facebook-open-graph', 'Facebook Open Graph', '/metabox/facebook-open-graph', 'normal', 'high', null);
+    public function registerMetaboxes(){
+        $this->addMetabox('facebook-open-graph', 'Facebook Open Graph', '/metabox/facebook-open-graph', 'normal', 'high', null);
 
-        /* chayka: registerMetaBoxes */
+        /* chayka: registerMetaboxes */
     }
 
     /**
-     * Remove registered metaboxes here via removeMetaBox() calls;
+     * Remove registered metaboxes here via removeMetabox() calls;
      */
-    public function unregisterMetaBoxes(){
-        /* chayka: unregisterMetaBoxes */
+    public function unregisterMetaboxes(){
+        /* chayka: unregisterMetaboxes */
     }
 }
