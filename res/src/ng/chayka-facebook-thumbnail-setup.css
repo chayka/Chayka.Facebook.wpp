@@ -69,3 +69,7 @@
   margin: -5px -5px -5px 5px;
   padding: 0 5px;
 }
+.chayka-facebook-thumbnail_setup > .thumbnail_setup-editor > .buttons {
+  margin-top: 1em;
+  text-align: right;
+}

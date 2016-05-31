@@ -8,7 +8,7 @@ use Chayka\WP\Queries\TermQuery;
 class AdminController extends Controller{
 
     public function init(){
-        $this->enqueueNgScriptStyle('chayka-options-form');
+        $this->enqueueNgScriptStyle('chayka-wp-admin');
     }
 
     public function facebookAction(){
