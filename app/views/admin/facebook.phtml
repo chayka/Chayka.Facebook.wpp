@@ -1,40 +1,38 @@
 <h2>Facebook</h2>
 
-<div data-ng-cloak data-ng-init="options={};">
-    <div data-console-page-options="options" data-namespace="Chayka.Facebook">
-            <div class="form_field fullsize app_id" data-form-field="app_id">
-                <label class="">App ID</label><input type="text" data-ng-init="options.app_id=''" data-ng-model="options.app_id" title="App ID"/>
-            </div>
-            <div class="form_field fullsize app_secret" data-form-field="app_secret">
-                <label class="">App Secret</label><input type="text" data-ng-init="options.app_secret=''" data-ng-model="options.app_secret" title="App Secret"/>
-            </div>
-            <div class="form_field fullsize admins" data-form-field="admins">
-                <label class="">Admins</label><input type="text" data-ng-init="options.admins=''" data-ng-model="options.admins" title="Admins"/>
-            </div>
-            <div class="form_field fullsize default_title" data-form-field="default_title">
-                <label class="">Default Title</label><input type="text" data-ng-init="options.default_title=''" data-ng-model="options.default_title" title="Default Title"/>
-            </div>
-            <div class="form_field fullsize default_description" data-form-field="default_description">
-                <label class="">Default Description</label><textarea data-ng-init="options.default_description=''" data-ng-model="options.default_description" title="Default Description"></textarea>
-            </div>
-            <div class="form_field fullsize default_image" data-form-field="default_image">
-                <label class="">Default Image (url)</label><input type="text" data-ng-init="options.default_image=''" data-ng-model="options.default_image" title="Default Image (url)"/>
-            </div>
-            <div class="form_field stretch init_status" data-form-field="init_js">
-                <label class="width80">Init JS API</label><select data-ng-init="options.init_js='0'; yesNoOptions = {'0': 'No', '1': 'Yes'}" data-ng-options="key as value for (key, value) in yesNoOptions" data-ng-model="options.init_js" title="Init JS API"></select>
-            </div>
-            <div class="form_field stretch init_status" data-form-field="init_status">
-                <label class="width80">Check Status</label><select data-ng-init="options.init_status='0'; yesNoOptions = {'0': 'No', '1': 'Yes'}" data-ng-options="key as value for (key, value) in yesNoOptions" data-ng-model="options.init_status" title="Check Status"></select>
-            </div>
-            <div class="form_field stretch init_cookie" data-form-field="init_cookie">
-                <label class="width80">Create Cookie</label><select data-ng-init="options.init_cookie='0'; yesNoOptions = {'0': 'No', '1': 'Yes'}" data-ng-options="key as value for (key, value) in yesNoOptions" data-ng-model="options.init_cookie" title="Create Cookie"></select>
-            </div>
-            <div class="form_field stretch init_status" data-form-field="init_xfbml">
-                <label class="width80">Render FB Widgets</label><select data-ng-init="options.init_xfbml='0'; yesNoOptions = {'0': 'No', '1': 'Yes'}" data-ng-options="key as value for (key, value) in yesNoOptions" data-ng-model="options.init_xfbml" title="Render FB Widgets"></select>
-            </div>
-            <div class="form_field stretch js_sdk_source" data-form-field="jsSdkSource">
-                <label class="width50">JS SDK Source</label><select data-ng-init="options.jsSdkSource='remote'; jsSdkSourceOptions = {'remote':'Remote','local':'Local'}" data-ng-model="options.jsSdkSource" data-ng-options="key as value for (key, value) in jsSdkSourceOptions" title="JS SDK Source"></select>
-            </div>
-	        <!-- chayka: fields -->
+<div data-console-page-options="options" data-namespace="Chayka.Facebook" data-ng-init="options={};" data-ng-cloak>
+    <div class="form_field fullsize app_id" data-form-field="app_id">
+        <label class="">App ID</label><input type="text" data-ng-init="options.app_id=''" data-ng-model="options.app_id" title="App ID"/>
     </div>
+    <div class="form_field fullsize app_secret" data-form-field="app_secret">
+        <label class="">App Secret</label><input type="text" data-ng-init="options.app_secret=''" data-ng-model="options.app_secret" title="App Secret"/>
+    </div>
+    <div class="form_field fullsize admins" data-form-field="admins">
+        <label class="">Admins</label><input type="text" data-ng-init="options.admins=''" data-ng-model="options.admins" title="Admins"/>
+    </div>
+    <div class="form_field fullsize default_title" data-form-field="default_title">
+        <label class="">Default Title</label><input type="text" data-ng-init="options.default_title=''" data-ng-model="options.default_title" title="Default Title"/>
+    </div>
+    <div class="form_field fullsize default_description" data-form-field="default_description">
+        <label class="">Default Description</label><textarea data-ng-init="options.default_description=''" data-ng-model="options.default_description" title="Default Description"></textarea>
+    </div>
+    <div class="form_field fullsize default_image" data-form-field="default_image">
+        <label class="">Default Image (url)</label><input type="text" data-ng-init="options.default_image=''" data-ng-model="options.default_image" title="Default Image (url)"/>
+    </div>
+    <div class="form_field stretch init_status" data-form-field="init_js">
+        <label class="width80">Init JS API</label><select data-ng-init="options.init_js='0'; yesNoOptions = {'0': 'No', '1': 'Yes'}" data-ng-options="key as value for (key, value) in yesNoOptions" data-ng-model="options.init_js" title="Init JS API"></select>
+    </div>
+    <div class="form_field stretch init_status" data-form-field="init_status">
+        <label class="width80">Check Status</label><select data-ng-init="options.init_status='0'; yesNoOptions = {'0': 'No', '1': 'Yes'}" data-ng-options="key as value for (key, value) in yesNoOptions" data-ng-model="options.init_status" title="Check Status"></select>
+    </div>
+    <div class="form_field stretch init_cookie" data-form-field="init_cookie">
+        <label class="width80">Create Cookie</label><select data-ng-init="options.init_cookie='0'; yesNoOptions = {'0': 'No', '1': 'Yes'}" data-ng-options="key as value for (key, value) in yesNoOptions" data-ng-model="options.init_cookie" title="Create Cookie"></select>
+    </div>
+    <div class="form_field stretch init_status" data-form-field="init_xfbml">
+        <label class="width80">Render FB Widgets</label><select data-ng-init="options.init_xfbml='0'; yesNoOptions = {'0': 'No', '1': 'Yes'}" data-ng-options="key as value for (key, value) in yesNoOptions" data-ng-model="options.init_xfbml" title="Render FB Widgets"></select>
+    </div>
+    <div class="form_field stretch js_sdk_source" data-form-field="jsSdkSource">
+        <label class="width50">JS SDK Source</label><select data-ng-init="options.jsSdkSource='remote'; jsSdkSourceOptions = {'remote':'Remote','local':'Local'}" data-ng-model="options.jsSdkSource" data-ng-options="key as value for (key, value) in jsSdkSourceOptions" title="JS SDK Source"></select>
+    </div>
+    <!-- chayka: fields -->
 </div>
