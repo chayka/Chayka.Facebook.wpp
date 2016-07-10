@@ -126,6 +126,9 @@ class FacebookController extends Controller{
      */
     public function uploadFontsZipAction(){
         AclHelper::apiPermissionRequired();
+        if(!is_dir(Plugin::getInstance()->getBasePath().Plugin::FONTS_DIR)){
+            mkdir(Plugin::getInstance()->getBasePath().Plugin::FONTS_DIR);
+        }
         if(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name'])){
             try{
                 $zipFn = $_FILES['file']['tmp_name'];
