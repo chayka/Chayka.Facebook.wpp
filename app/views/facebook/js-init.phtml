@@ -7,6 +7,7 @@ $this->declareVars([
 
 $localSdk = Plugin::getInstance()->getUrlRes('lib/facebook/sdk.'.$this->locale.'.js');
 $this->locale = str_replace('-', '_', $this->locale);
+$this->version = 'v2.8';
 $remoteSdk = "//connect.facebook.net/".$this->locale."/sdk.js";
 $sdkSrc = OptionHelper::getOption('jsSdkSource', 'remote') === 'remote'?$remoteSdk:$localSdk;
 
@@ -18,7 +19,7 @@ $sdkSrc = OptionHelper::getOption('jsSdkSource', 'remote') === 'remote'?$remoteS
 			status     : <?php echo FacebookHelper::isStatusChecked()?'true':'false'?>, // check login status
 			cookie     : <?php echo FacebookHelper::isCookieCreated()?'true':'false'?>, // enable cookies to allow the server to access the session
 			xfbml      : <?php echo FacebookHelper::isWidgetsRenderEnabled()?'true':'false'?>,  // parse XFBML
-			version    : 'v2.2'
+			version    : '<?php echo $this->version;?>'
 		});
 	};
 
